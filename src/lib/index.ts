@@ -5,10 +5,13 @@ import { ITrackerResponse } from "./interface/itracker_response";
 import { ContactStateManager } from "./contact_state_manager";
 import { ConsentMessage } from "./interface/consent_message";
 import { JobType } from "./enums/enums";
+import { Utils } from "./utils";
 class PamTracker {
   private config: IConfig;
   private api: PamAPI;
   private contactState: ContactStateManager;
+
+  utils = new Utils();
 
   queueManager = new QueueManager<ITrackerResponse>(50, async (jobs) => {
     if (jobs.length == 1) {

@@ -38,7 +38,7 @@ module.exports = {
     minimize: true,
     minimizer: [
       new TerserPlugin({ extractComments: false }),
-      new CssMinimizerPlugin(),
+      //new CssMinimizerPlugin(),
     ],
   },
   module: {
@@ -53,16 +53,16 @@ module.exports = {
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          MiniCssExtractPlugin.loader,
-          { loader: "css-loader", options: { sourceMap: true } },
+          //MiniCssExtractPlugin.loader,
+          // { loader: "css-loader", options: { sourceMap: true } },
         ],
       },
     ],
   },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: "css/index.css",
-    }),
+    // new MiniCssExtractPlugin({
+    //   filename: "css/index.css",
+    // }),
     new webpack.BannerPlugin(banner),
   ],
   resolve: {

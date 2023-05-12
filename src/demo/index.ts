@@ -21,11 +21,11 @@ async function consent() {
   consents[contact].allowAll();
 
   console.log("add 2");
-  pam.submitConsent(consents[tracking]);
+  pam.submitConsent(consents[tracking], true);
   console.log("add 3");
-  pam.submitConsent(consents[contact]);
+  pam.submitConsent(consents[contact], true);
 }
 
 console.log("add 1");
-pam.track("start_demo", {});
+pam.track("start_demo", {}, true);
 consent();

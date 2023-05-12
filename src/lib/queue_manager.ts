@@ -47,7 +47,10 @@ export class QueueManager<T> {
     while (this.jobs.length > 0) {
       const jobs: RequestJob<T>[] = [];
 
-      while (this.jobs.length > 0 && !this.jobs[0].flushEventBefore) {
+      while (this.jobs.length > 0) {
+        if (this.jobs[0].flushEventBefore && jobs.length > 0) {
+          break;
+        }
         const job = this.jobs.shift();
         jobs.push(job);
       }
