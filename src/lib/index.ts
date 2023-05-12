@@ -43,10 +43,13 @@ class PamTracker {
         useSameContact = false;
       }
 
-      const events = jobs.flatMap((job) => {
+      const events: Record<string, any>[] = [];
+
+      for (const i in jobs) {
+        const job = jobs[i];
         const jsonPayload = this.buildEventPayload(job, contactId, database);
-        return jsonPayload;
-      });
+        events.push(jsonPayload);
+      }
 
       const response = await this.api.postTrackers(useSameContact, events);
 
