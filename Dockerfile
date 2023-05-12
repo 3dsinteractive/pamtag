@@ -1,5 +1,4 @@
 FROM nginx:1.20
-#FROM nginx:1.20.1-alpine
 
 RUN \
     apt-get update && \
@@ -7,7 +6,6 @@ RUN \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY ./dist /usr/share/nginx/html/script
-# COPY ./consent-request/dist /usr/share/nginx/html/ui
+COPY ./build/pamtracker.js /usr/share/nginx/html/script
 
 WORKDIR /usr/share/nginx/html
