@@ -1,5 +1,3 @@
-import { JobType } from "./enums/enums";
-
 export type RequestJob<T> = {
   event: string;
   trackingConsentMessageId: string;

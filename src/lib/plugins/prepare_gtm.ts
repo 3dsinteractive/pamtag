@@ -11,6 +11,7 @@ export class PrepareGTM extends Plugin {
           w.dataLayer.push(arguments);
         };
       }
+      return;
     });
   }
 }

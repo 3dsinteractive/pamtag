@@ -73,6 +73,7 @@ class PamTracker {
       pluginRegister.plugins[i].initPlugin(this);
     }
 
+    // Hook StartUp
     this.hook.dispatchOnStartup(config);
   }
 
