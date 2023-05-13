@@ -1,7 +1,6 @@
 import { JobType } from "./enums/enums";
 
 export type RequestJob<T> = {
-  jobType?: JobType;
   event: string;
   trackingConsentMessageId: string;
   data?: Record<string, any>;

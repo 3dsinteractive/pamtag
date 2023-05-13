@@ -3,7 +3,6 @@ import { PamAPI } from "./api";
 import { QueueManager, RequestJob } from "./queue_manager";
 import { ITrackerResponse } from "./interface/itracker_response";
 import { ConsentMessage } from "./interface/consent_message";
-import { JobType } from "./enums/enums";
 import { Utils } from "./utils";
 import { Hook } from "./core/hook";
 import { PluginRegistration } from "./plugins/index";
@@ -62,8 +61,6 @@ class PamTracker {
   });
 
   constructor(config: IConfig) {
-    this.createGetPamFunction();
-    this.prepareGTM();
     this.config = config;
     this.api = new PamAPI(config.baseApi);
 
@@ -77,54 +74,6 @@ class PamTracker {
     }
 
     this.hook.dispatchOnStartup(config);
-
-    if (config.autoTrackPageview === true) {
-      this.autoTrackPageview();
-    }
-  }
-
-  private createGetPamFunction() {
-    const w = window as any;
-    w.getPam = function () {
-      return new Promise(function (resolve) {
-        if (w.pam) {
-          resolve(w.pam);
-          return;
-        }
-        var intervalId = setInterval(function () {
-          if (w.pam !== null && typeof w.pam !== "undefined") {
-            clearInterval(intervalId);
-            resolve(w.pam);
-          }
-        }, 200);
-      });
-    };
-  }
-
-  private autoTrackPageview() {
-    this.track("page_view");
-
-    var previousUrl = "";
-
-    var observer = new MutationObserver((mutations) => {
-      if (location.href !== previousUrl) {
-        previousUrl = location.href;
-        this.track("page_view");
-      }
-    });
-
-    var config = { subtree: true, childList: true };
-    observer.observe(document, config);
-  }
-
-  private prepareGTM() {
-    const w = window as any;
-    w.dataLayer = w.dataLayer || [];
-    if (!w.gtag) {
-      w.gtag = function () {
-        w.dataLayer.push(arguments);
-      };
-    }
   }
 
   buildEventPayload(job: RequestJob<ITrackerResponse>) {
@@ -147,7 +96,6 @@ class PamTracker {
     data[loginKey] = loginId;
 
     let job: RequestJob<ITrackerResponse> = {
-      jobType: JobType.LOGIN,
       event: "login",
       trackingConsentMessageId: this.config.trackingConsentMessageId,
       data: data,
@@ -156,7 +104,6 @@ class PamTracker {
     await this.queueManager.enqueueJob(job);
 
     job = {
-      jobType: JobType.LOGIN,
       event: "login",
       trackingConsentMessageId: this.config.trackingConsentMessageId,
       data: data,
@@ -167,7 +114,6 @@ class PamTracker {
 
   async userLogout() {
     const job: RequestJob<ITrackerResponse> = {
-      jobType: JobType.LOGOUT,
       event: "logout",
       trackingConsentMessageId: this.config.trackingConsentMessageId,
       data: {},
@@ -182,7 +128,6 @@ class PamTracker {
     flushEventBefore: boolean = false
   ) {
     const job: RequestJob<ITrackerResponse> = {
-      jobType: JobType.TRACK,
       event: event,
       trackingConsentMessageId: this.config.trackingConsentMessageId,
       data: payload,
@@ -197,7 +142,6 @@ class PamTracker {
     flushEventBefore: boolean = false
   ) {
     const job: RequestJob<ITrackerResponse> = {
-      jobType: JobType.ALLOW_CONSENT,
       event: "allow_consent",
       trackingConsentMessageId: consent.data.consent_message_id,
       data: consent.buildFormField(),

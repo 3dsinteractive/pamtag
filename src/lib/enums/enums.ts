@@ -1,10 +1,3 @@
-export enum JobType {
-  TRACK = "track",
-  LOGIN = "login",
-  LOGOUT = "logout",
-  ALLOW_CONSENT = "consent",
-}
-
 export enum ConsentType {
   CONTACT = "contacting_type",
   TRACKING = "tracking_type",
