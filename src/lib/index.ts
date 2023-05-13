@@ -76,6 +76,8 @@ class PamTracker {
       pluginRegister.plugins[i].initPlugin(this);
     }
 
+    this.hook.dispatchOnStartup(config);
+
     if (config.autoTrackPageview === true) {
       this.autoTrackPageview();
     }
