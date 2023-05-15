@@ -35,7 +35,11 @@ class PamTracker {
       for (const i in jobs) {
         const job = jobs[i];
         let jsonPayload = this.buildEventPayload(job);
-        jsonPayload = this.hook.dispatchPreTracking(job.event, jsonPayload);
+        jsonPayload = await this.hook.dispatchPreTracking(
+          job.event,
+          jsonPayload
+        );
+        console.log("PAYLOAD", jsonPayload);
         events.push(jsonPayload);
       }
 
