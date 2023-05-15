@@ -39,7 +39,7 @@ class PamTracker {
           job.event,
           jsonPayload
         );
-        console.log("PAYLOAD", jsonPayload);
+
         events.push(jsonPayload);
       }
 
