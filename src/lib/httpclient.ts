@@ -22,7 +22,6 @@ export class HTTPClient {
   }
 
   public async put(endpoint: string, body: any) {
-    console.log("POST", `${this.baseUrl}${endpoint}`);
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "PUT",
       headers: {

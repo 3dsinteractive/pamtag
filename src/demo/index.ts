@@ -10,8 +10,6 @@ const pam = new PamTracker({
 
 document.querySelector("body").innerHTML = `<h1>Hello World!</h1>`;
 
-console.log("myLibraryInstance", pam);
-
 async function consent() {
   const tracking = "1qDQOyMeBv64LYnXi6dJOcZp2YQ";
   const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
@@ -20,12 +18,9 @@ async function consent() {
   consents[tracking].allowAll();
   consents[contact].allowAll();
 
-  console.log("add 2");
   pam.submitConsent(consents[tracking], true);
-  console.log("add 3");
   pam.submitConsent(consents[contact], true);
 }
 
-console.log("add 1");
 pam.track("start_demo", {}, true);
 consent();

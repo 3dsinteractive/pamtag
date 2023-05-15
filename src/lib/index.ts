@@ -19,11 +19,9 @@ class PamTracker {
       const job = jobs[0];
 
       let jsonPayload = this.buildEventPayload(job);
-      console.log("Origitnal", jsonPayload);
+
       // Hook Pre Event
       jsonPayload = await this.hook.dispatchPreTracking(job.event, jsonPayload);
-
-      console.log("Plugin", jsonPayload);
 
       const response = await this.api.postTracker(jsonPayload);
 
