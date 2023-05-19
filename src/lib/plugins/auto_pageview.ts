@@ -7,8 +7,9 @@ export class AutoPageView extends Plugin {
 
   autoTrackPageview() {
     var observer = new MutationObserver((mutations) => {
-      if (location.href !== this.previousUrl) {
-        this.previousUrl = location.href;
+      const url = this.pam.utils.getPageURL();
+      if (url !== this.previousUrl) {
+        this.previousUrl = url;
         this.pam.track("page_view");
       }
     });

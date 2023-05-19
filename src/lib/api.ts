@@ -3,9 +3,8 @@ import {
   ITrackerResponse,
   IBulkTrackerResponse,
 } from "./interface/itracker_response";
-import { IConsentMessage, ConsentMessage } from "./interface/consent_message";
-import { RequestJob } from "./queue_manager";
-
+import { ConsentMessage } from "./interface/consent_message";
+import { IAttentionItem } from "./interface/attention";
 export class PamAPI {
   private http: HTTPClient;
 
@@ -15,6 +14,20 @@ export class PamAPI {
 
   private getPageURL() {
     return window.document.location && window.document.location.href;
+  }
+
+  async getWebAttention(
+    contactId: string,
+    pageUrl: string
+  ): Promise<IAttentionItem> {
+    return await this.http.post(
+      "/attention",
+      {
+        page_url: decodeURI(this.getPageURL()),
+        _contact_id: contactId,
+      },
+      {}
+    );
   }
 
   getDefaultPayload(): Record<string, any> {

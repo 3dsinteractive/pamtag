@@ -6,11 +6,12 @@ import { ConsentMessage } from "./interface/consent_message";
 import { Utils } from "./utils";
 import { Hook } from "./core/hook";
 import { PluginRegistration } from "./plugins/index";
+import { ContactStateManager } from "./contact_state_manager";
 
 class PamTracker {
   config: IConfig;
-  private api: PamAPI;
-
+  api: PamAPI;
+  contactState: ContactStateManager;
   hook = new Hook();
   utils = new Utils();
 
@@ -65,6 +66,14 @@ class PamTracker {
   constructor(config: IConfig) {
     this.config = config;
     this.api = new PamAPI(config.baseApi);
+
+    //Contact state will handle the state inside plugins/login_state.ts
+    this.contactState = new ContactStateManager(
+      config.publicDBAlias,
+      config.loginDBAlias,
+      config.loginKey
+    );
+    this.contactState.resumeSession();
 
     if (!this.config.sessionExpireTimeMinutes) {
       this.config.sessionExpireTimeMinutes = 60;
@@ -138,6 +147,10 @@ class PamTracker {
     };
 
     return this.queueManager.enqueueJob(job);
+  }
+
+  async cleanPamCookies() {
+    this.hook.dispatchOnClean(this.config);
   }
 
   async submitConsent(

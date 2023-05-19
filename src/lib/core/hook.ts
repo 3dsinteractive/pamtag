@@ -19,6 +19,7 @@ export class Hook {
   preEventListener: TrackingListener[] = [];
   postEventListener: TrackingListener[] = [];
   startupListener: SystemListener[] = [];
+  cleanListener: SystemListener[] = [];
 
   private isMatchEvent(srcEvent: string, listen: any) {
     if (listen === "*") {
@@ -66,6 +67,17 @@ export class Hook {
       const e = this.startupListener[i];
       e.callback(config);
     }
+  }
+
+  async dispatchOnClean(config: IConfig): Promise<void> {
+    for (const i in this.cleanListener) {
+      const e = this.cleanListener[i];
+      e.callback(config);
+    }
+  }
+
+  onClean(callback: (config: IConfig) => Promise<void>) {
+    this.cleanListener.push({ callback });
   }
 
   onStartup(callback: (config: IConfig) => Promise<void>) {
