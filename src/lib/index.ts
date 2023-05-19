@@ -64,6 +64,10 @@ class PamTracker {
   });
 
   constructor(config: IConfig) {
+    if (!config.preferLanguage) {
+      config.preferLanguage = "th";
+    }
+
     this.config = config;
     this.api = new PamAPI(config.baseApi);
 

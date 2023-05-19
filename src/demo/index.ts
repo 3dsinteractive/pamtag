@@ -6,6 +6,8 @@ const pam = new PamTracker({
   publicDBAlias: "my-ecommerce-public",
   loginDBAlias: "my-ecommerce-login",
   loginKey: "customer",
+  autoTrackPageview: true,
+  displayCookieConsentBarOnStartup: true,
 });
 
 document.querySelector("body").innerHTML = `<h1>Hello World!</h1>`;
@@ -22,5 +24,5 @@ async function consent() {
   pam.submitConsent(consents[contact], true);
 }
 
-pam.track("start_demo", {}, true);
-consent();
+//pam.track("start_demo", {}, true);
+//consent();

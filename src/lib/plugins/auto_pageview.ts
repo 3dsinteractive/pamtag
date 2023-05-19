@@ -23,7 +23,6 @@ export class AutoPageView extends Plugin {
     pam.hook.onStartup((config): Promise<void> => {
       if (config.autoTrackPageview === true) {
         if (config.autoTrackPageview) {
-          pam.track("page_view");
           this.autoTrackPageview();
         }
       }

@@ -8,4 +8,6 @@ export default interface IConfig {
   loginKey?: string;
   autoTrackPageview?: boolean;
   sessionExpireTimeMinutes?: number; // default 60 min
+  displayCookieConsentBarOnStartup?: boolean;
+  preferLanguage?: string;
 }

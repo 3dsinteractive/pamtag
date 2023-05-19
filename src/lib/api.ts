@@ -5,6 +5,7 @@ import {
 } from "./interface/itracker_response";
 import { ConsentMessage } from "./interface/consent_message";
 import { IAttentionItem } from "./interface/attention";
+import { ICustomerConsentStatus } from "./interface/iconsent_status";
 export class PamAPI {
   private http: HTTPClient;
 
@@ -64,6 +65,18 @@ export class PamAPI {
       payload,
       headers
     );
+    return response;
+  }
+
+  async loadConsentStatus(
+    contactId: string,
+    consentMessageIDs: string
+  ): Promise<ICustomerConsentStatus> {
+    const response = await this.http.get(
+      `/contacts/${contactId}/consents/${consentMessageIDs}`,
+      {}
+    );
+
     return response;
   }
 
