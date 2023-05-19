@@ -89,33 +89,33 @@ export class WebAttenTionPlugin extends Plugin {
   }
 
   private async fetchWebAttention(pam: PamTracker) {
-    //const url = pam.utils.getPageURL();
-    //const contactID = pam.contactState.getContactId();
-    //const attention = await pam.api.getWebAttention(contactID, url);
+    const url = pam.utils.getPageURL();
+    const contactID = pam.contactState.getContactId();
+    const attention = await pam.api.getWebAttention(contactID, url);
 
-    const attention: IAttentionItem = {
-      html: '<html><body><div style="background-color:#ffffff;display:flex;flex-direction:column;flex:1;" class="pam-web-attention"><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="flex-grow:inherit;background-color:#f0f0f0;"><h2 style="margin:0px;"><span align="center" style="width:100%;display:inline-block;font-size:1.5rem;line-height:1.3;"><span font-family="Impact" style="display:inline-block;font-size:1rem;line-height:1.3;color:#0047b2;">เตรียมช้อปกับแบรนด์ดังมากมาย วันที่ 8.8 เร็วๆ นี้</span></span></h2></div></div><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="flex:1;justify-content:center;"><img src="https://s3-ap-southeast-1.amazonaws.com/pam4-sansiri/ecom/public/2CqFnJa7w52KYvrQTEafRFYpSRy.jpg" style="width:100%;display:flex;flex-direction:row;"></img></div></div><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="background-color:#f0f0f0;flex:1;"><div style="height:20px;"></div></div></div><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="display:flex;background-color:#f0f0f0;flex:1;justify-content:center;"><a href="https://stgx.pams.ai/r/2Px9moaup0dO8p3zVwXqC1arJqX"><button style="background-color:#1f27f9;border:1px solid #ffffff;border-radius:1px;font-family:Courier-New;font-size:20px;color:#ffffff;">OK</button></a></div></div><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="background-color:#f0f0f0;flex:1;"><div style="height:20px;"></div></div></div></div></body></html> <img src="https://stgx.pams.ai/pixel/2Px9mlFZXp0o4fgOXS3tbPAmXcJ?media=web_attention" height="1" width="1" style="display: none;"/>',
-      css: "",
-      custom_css: "",
-      js: "",
-      options: {
-        type: "POPUP",
-        position: "FIXED",
-        container_id: "",
-        size: {
-          type: "small",
-          width: 0,
-        },
-        display_after: {
-          percent: 0,
-          second: 1,
-          type: "time_spend",
-        },
-        allow_backdrop_click: true,
-        backdrop_opacity: 50,
-        is_borderless: false,
-      },
-    };
+    // const attention: IAttentionItem = {
+    //   html: '<html><body><div style="background-color:#ffffff;display:flex;flex-direction:column;flex:1;" class="pam-web-attention"><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="flex-grow:inherit;background-color:#f0f0f0;"><h2 style="margin:0px;"><span align="center" style="width:100%;display:inline-block;font-size:1.5rem;line-height:1.3;"><span font-family="Impact" style="display:inline-block;font-size:1rem;line-height:1.3;color:#0047b2;">เตรียมช้อปกับแบรนด์ดังมากมาย วันที่ 8.8 เร็วๆ นี้</span></span></h2></div></div><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="flex:1;justify-content:center;"><img src="https://s3-ap-southeast-1.amazonaws.com/pam4-sansiri/ecom/public/2CqFnJa7w52KYvrQTEafRFYpSRy.jpg" style="width:100%;display:flex;flex-direction:row;"></img></div></div><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="background-color:#f0f0f0;flex:1;"><div style="height:20px;"></div></div></div><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="display:flex;background-color:#f0f0f0;flex:1;justify-content:center;"><a href="https://stgx.pams.ai/r/2Px9moaup0dO8p3zVwXqC1arJqX"><button style="background-color:#1f27f9;border:1px solid #ffffff;border-radius:1px;font-family:Courier-New;font-size:20px;color:#ffffff;">OK</button></a></div></div><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="background-color:#f0f0f0;flex:1;"><div style="height:20px;"></div></div></div></div></body></html> <img src="https://stgx.pams.ai/pixel/2Px9mlFZXp0o4fgOXS3tbPAmXcJ?media=web_attention" height="1" width="1" style="display: none;"/>',
+    //   css: "",
+    //   custom_css: "",
+    //   js: "",
+    //   options: {
+    //     type: "POPUP",
+    //     position: "FIXED",
+    //     container_id: "",
+    //     size: {
+    //       type: "small",
+    //       width: 0,
+    //     },
+    //     display_after: {
+    //       percent: 0,
+    //       second: 1,
+    //       type: "time_spend",
+    //     },
+    //     allow_backdrop_click: true,
+    //     backdrop_opacity: 50,
+    //     is_borderless: false,
+    //   },
+    // };
 
     if (Object.keys(attention).length > 0 && attention.constructor === Object) {
       this.initAttention(attention);
