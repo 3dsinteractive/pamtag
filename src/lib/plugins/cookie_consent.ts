@@ -1,11 +1,10 @@
 import PamTracker from "..";
 import { Plugin } from "../core/plugin";
-//import htmlContent from "./html/cookie_consent_bar.html";
+import { CookieConsentBatUI } from "../ui/cookie_consent_bar";
 
 export class CookieConsentPlugin extends Plugin {
   private pam: PamTracker;
-  private shadowHost?: HTMLElement;
-  private shadowRoot?: ShadowRoot;
+  private cookieConsentBar: CookieConsentBatUI;
 
   override initPlugin(pam: PamTracker): void {
     this.pam = pam;
@@ -15,41 +14,12 @@ export class CookieConsentPlugin extends Plugin {
     });
   }
 
-  private getShadowHost() {
-    if (this.shadowHost) {
-      return this.shadowHost;
-    }
-
-    const shadowHostId = "pam_cookie_consent_bar";
-
-    this.shadowHost = document.getElementById(shadowHostId);
-    if (!this.shadowHost) {
-      this.shadowHost = window.document.createElement("div");
-      this.shadowHost.id = shadowHostId;
-      const body = window.document.querySelector("body")!;
-      body.insertBefore(this.shadowHost, body.childNodes[0] || null);
-    }
-    return this.shadowHost;
-  }
-
-  private getShadowRoot() {
-    if (this.shadowRoot) {
-      return this.shadowRoot;
-    }
-
-    const host = this.getShadowHost();
-    this.shadowRoot = host.attachShadow({ mode: "open" });
-    return this.shadowRoot;
-  }
-
   private async renderConsentBar(consentMessageId: string) {
-    const consentMessage = await this.pam.loadConsentDetail(consentMessageId);
+    this.cookieConsentBar = new CookieConsentBatUI(this.pam);
+    this.cookieConsentBar.attachShadowDom(true);
 
-    const shadowRoot = this.getShadowRoot();
-    const div = document.createElement("div");
-    //div.innerHTML = htmlContent;
-    //console.log(htmlContent);
-    shadowRoot.appendChild(div);
+    const consentMessage = await this.pam.loadConsentDetail(consentMessageId);
+    this.cookieConsentBar.show(consentMessage);
   }
 
   private async checkConsentPermission() {

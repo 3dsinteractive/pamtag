@@ -8,7 +8,16 @@ const pam = new PamTracker({
   loginKey: "customer",
   autoTrackPageview: true,
   displayCookieConsentBarOnStartup: true,
+  preferLanguage: "th",
 });
+
+document.querySelector("head").innerHTML = `<link rel="stylesheet"
+href="https://fonts.googleapis.com/css?family=Noto+Sans+Thai">
+<style>
+body{
+  font-family: 'Noto Sans Thai';
+}
+</style>`;
 
 document.querySelector("body").innerHTML = `<h1>Hello World!</h1>`;
 

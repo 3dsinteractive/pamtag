@@ -45,7 +45,7 @@ module.exports = {
     rules: [
       {
         test: /\.html$/i,
-        loader: "html-loader",
+        loader: "raw-loader",
       },
       {
         test: /\.(m|j|t)s$/,

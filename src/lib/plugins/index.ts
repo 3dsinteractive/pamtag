@@ -16,6 +16,6 @@ export class PluginRegistration {
     new UTMPlugin(),
     new FBPixel(),
     new WebAttenTionPlugin(),
-    // new CookieConsentPlugin(),
+    new CookieConsentPlugin(),
   ];
 }

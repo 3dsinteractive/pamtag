@@ -67,8 +67,20 @@ class PamTracker {
     if (!config.preferLanguage) {
       config.preferLanguage = "th";
     }
-
     this.config = config;
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => {
+        this.initialize(config);
+      });
+    } else {
+      setTimeout(() => {
+        this.initialize(config);
+      }, 100);
+    }
+  }
+
+  private initialize(config: IConfig) {
+    console.log("INIT PAM");
     this.api = new PamAPI(config.baseApi);
 
     //Contact state will handle the state inside plugins/login_state.ts
