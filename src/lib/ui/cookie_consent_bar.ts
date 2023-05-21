@@ -4,7 +4,11 @@ import ShadowDom from "../ui/shadow_dom";
 import htmlContent from "./html/consent_bar_template.html";
 
 export class CookieConsentBatUI extends ShadowDom {
+  onOpenMoreInfo?: (consentMessage: ConsentMessage) => void;
+  consentMessage: ConsentMessage;
+
   show(consentMessage: ConsentMessage) {
+    this.consentMessage = consentMessage;
     let alpha = 1;
     if (
       consentMessage.data.style_configuration.bar_background_opacity_percentage
@@ -66,7 +70,9 @@ export class CookieConsentBatUI extends ShadowDom {
     this.removeAllChild();
   }
 
-  private openMoreInfoPopup(consentMessage: ConsentMessage) {}
+  private openMoreInfoPopup(consentMessage: ConsentMessage) {
+    this.onOpenMoreInfo(this.consentMessage);
+  }
 
   private openMoreInfoLink(consentMessage: ConsentMessage) {
     window.open(

@@ -2,915 +2,301 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background-color: indigo;
-        }
-
-        #consent-noti {
-            position: fixed;
-            display: flex;
-            justify-content: center;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            z-index: 900001;
-            /* background color and opacity */
-            background-color: ${this.consentDetail.style_configuration.bar_background_color};
-            opacity: ${this.consentDetail.style_configuration.bar_background_opacity_percentage / 100};
-        }
-
-        .container {
-            display: flex;
-            align-content: center;
-            width: 100%;
-        }
-
-        .container>div {
-            display: flex;
-            align-items: center;
-        }
-
-        #consent-txt-container {
-            flex-grow: 1;
-            padding: 20px 20px 20px 40px;
-        }
-
-        #consent-txt {
-            color: ${this.consentDetail.style_configuration.bar_text_color};
-            font-size: 0.9rem;
-        }
-
-        #consent-txt a:link,
-        #consent-txt a:visited,
-        #consent-txt a:active {
-            color: ${this.consentDetail.style_configuration.bar_text_color};
-        }
-
-        #consent-txt a:hover {
-            color: ${this.consentDetail.style_configuration.button_background_color};
-        }
-
-        #consent-noti-btn-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: space-between;
-            padding: 15px;
-        }
-
-        #language-btn-container {
-            color: ${this.consentDetail.style_configuration.bar_text_color};
-            font-size: 0.8rem;
-            margin-bottom: 10px;
-        }
-
-        #language-btn-container .language-btn {
-            cursor: pointer;
-        }
-
-        #language-btn-container .active-language-btn {
-            color: ${this.consentDetail.style_configuration.consent_detail.primary_color} !important;
-        }
-
-        #language-btn-container .select-language {
-          cursor: pointer;
-          border: none;
-          background: none;
-          color: white;
-          border-color: white;
+      .shadow-bg {
+        background-color: #0006;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+      .popup-body {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-height: 600px;
+        max-width: 800px;
+        width: 80%;
+        height: 80%;
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        font-family: Sukhumvit, Helvetica;
       }
 
-        .accept-btn {
-            cursor: pointer;
-            /* btn color */
-            background-color: ${this.consentDetail.style_configuration.button_background_color};
-            /* btn text color */
-            color: ${this.consentDetail.style_configuration.button_text_color};
-            padding: 12px 48px;
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-
-        .accept-btn:hover {
-            opacity: 0.8;
-        }
-
-        .more-info-link {
-            margin-left: 6px;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .more-info-link:hover {
-            color: ${this.consentDetail.style_configuration.button_background_color};
-        }
-
-        .notification-close-btn {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            height: 12px;
-            width: 12px;
-        }
-
-        .close-btn {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `768px`}) {
-            .close-btn {
-                justify-content: flex-start;
-            }
-        }
-
-        .close-btn:hover {
-            opacity: 0.5;
-        }
-
-        .notification-close-btn::before,
-        .notification-close-btn::after {
-            position: absolute;
-            content: '';
-            width: 100%;
-            height: 1px;
-            /* btn color */
-            background-color: ${this.consentDetail.style_configuration.button_background_color};
-        }
-
-        .close-btn::before {
-
-        }
-
-        .close-btn::after {
-
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `768px`}) {
-            .container {
-                flex-direction: column;
-            }
-            #consent-txt-container {
-                padding: 30px 15px 5px;
-            }
-            .accept-btn {
-                text-align: center;
-                width: 100%;
-            }
-        }
-        /* modal */
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 900002;
-        }
-
-        .consent-message-modal {
-            padding: 10px;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: ${this.previewMode ? `calc((100vh / 3) * 4)` : `800px`};
-            max-width: ${this.previewMode ? `95%` : `80%`};
-            height: ${this.previewMode ? `95%` : `90% !important`};
-            max-height: 550px;
-            min-height: 280px;
-            background-color: #ffffff;
-            z-index: 900003;
-            border-radius: 7px;
-            font-family: "Roboto", sans-serif;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .consent-message-topic-container {
-            display: flex;
-            margin-bottom: 5px;
-        }
-
-        .consent-message-topic {
-            display: flex;
-            align-items: center;
-        }
-
-        .pop-up-main-icon-container {
-            display: flex;
-            align-items: center;
-            margin-right: 15px;
-            color: ${this.consentDetail.style_configuration.consent_detail.primary_color};
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `768px`}) {
-            .consent-message-modal {
-                padding: 10px;
-            }
-            .consent-message-topic {
-                flex-direction: column;
-                align-items: flex-start;
-                flex-basis: 100%;
-                margin-top: 0;
-            }
-            .pop-up-main-icon-container {
-                margin-bottom: 10px;
-                pop-up-main-icon-container
-            }
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `599px`}) {
-            .consent-message-modal {
-                height: ${this.previewMode ? `95%` : `70%`};
-            }
-        }
-
-        .pop-up-main-icon {
-            margin-right: 10px;
-            width:30px;
-            height:30px
-        }
-
-        .consent-message-topic-container h2,
-        h3 {
-            margin: 0;
-        }
-
-        .active-modal-language-btn {
-            box-shadow: 0px 0px 0px 1px ${
-              this.consentDetail.style_configuration.consent_detail.primary_color
-            } inset;
-        }
-
-        .inactive-language-btn {
-            background-color: #EBEBEB;
-        }
-
-        .consent-message-container {
-            display: flex;
-            height: calc(80% - 55px);
-            flex-grow: 1;
-            border: 1px solid #C6C6C6;
-            flex-basis: 80%;
-            z-index: 2;
-            margin-bottom: auto;
-        }
-
-        #consent-message-container {
-            border-radius: 8px;
-        }
-
-        .consent-detail-title {
-            color: #303131;
-        }
-
-        #consent-detail-type-tab-bar {
-            display: flex;
-            flex-direction: column;
-            flex-basis: 30%;
-            border-right: 1px solid #C6C6C6;
-            background-color: #EBEBEB;
-            border-radius: 8px 0px 0px 8px;
-            overflow-y: scroll;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        #consent-detail-type-tab-bar::-webkit-scrollbar {
-            display: none;
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `768px`}) {
-            #consent-message-container {
-                display: none;
-            }
-        }
-
-        .consent-detail-type-tab {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .consent-detail-type-tab:first-of-type {
-            border-radius: 8px 0 0 0;
-        }
-
-        .consent-detail-type {
-            color: #303131;
-            font-weight: 500;
-        }
-
-        .active-consent-type-icon-container {
-            flex-basis: 24px;
-            margin-right: 10px;
-            height: 24px;
-        }
-
-        .active-consent-type-icon-container svg {
-            width: 24px;
-            height: 24px;
-            color: #71D879;
-        }
-
-        .modal-lang-and-close-btn {
-            margin-left: auto;
-            display: flex;
-        }
-
-        #modal-language-btn-container {
-            display: flex;
-            align-items: center;
-            margin-right: 15px;
-        }
-
-        #modal-language-btn-container .select-language {
-          border: none;
-          background: #EBEBEB;
-          cursor: pointer;
-          padding: 5px;
-          border-radius: 4px;
-        }
-
-        .select-language:focus-visible {
-          outline: none;
-        }
-
-        .modal-language-btn {
-            padding: 10px;
-            color: ${this.consentDetail.style_configuration.consent_detail.primary_color};
-            font-size: 0.8rem;
-            height: 35px;
-            width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .modal-language-btn:first-of-type {
-            border-radius: 8px 0px 0px 8px;
-        }
-
-        .modal-language-btn:last-of-type {
-            border-radius: 0px 8px 8px 0px;
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `599px`}) {
-            .modal-lang-and-close-btn {
-                top: 15px;
-                right: 10px;
-            }
-            #modal-language-btn-container {
-                margin-right: 5px;
-            }
-            .modal-language-btn {
-                height: 25px;
-                width: 30px;
-                font-size: 10px;
-            }
-            .modal-language-btn:first-of-type {
-                border-radius: 5px 0px 0px 5px;
-            }
-            .modal-language-btn:last-of-type {
-                border-radius: 0px 5px 5px 0px;
-            }
-        }
-
-        .modal-close-btn::after {
-            content: '\\00d7';
-            color: #9CACAC;
-            font-size:30px;
-            margin-top: -15px;
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `599px`}) {
-            .modal-close-btn::before,
-            .modal-close-btn::after {
-                width: 70%;
-            }
-        }
-
-        .modal-tab:hover {
-            background-color: #f1f1f1;
-        }
-
-        .modal-tab-active {
-            background-color: #FFFFFF;
-        }
-
-        .consent-message-content-container {
-            flex-basis: 75%;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            padding: 15px 25px;
-        }
-
-        .modal-content-topic-container {
-            margin-bottom: 15px;
-            max-height: 20%;
-            color: ${this.consentDetail.style_configuration.consent_detail.secondary_color};
-        }
-
-        #full-consent-message-container .modal-content-topic-container {
-            margin: 0px 0px 15px !important;
-        }
-
-        #full-consent-message-container .consent-message-content-container {
-            flex-basis: 100%;
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `768px`}) {
-            #full-consent-message-container .consent-message-content-container {
-                padding: 15px;
-            }
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `599px`}) {
-            #full-consent-message-container .consent-message-content-container {
-                padding: 10px;
-            }
-            #modal-full-content-topic {
-                font-size: 15px !important;
-            }
-        }
-
-        .consent-message-description-container {
-            flex-basis: 80%;
-            overflow-y: scroll;
-            margin-bottom: auto;
-            max-height: 100%;
-        }
-
-        #full-consent-message-container .consent-message-description-container {
-            flex-basis: 100%;
-        }
-
-        .consent-message-description-container p {
-            font-size: 0.9rem;
-            color: ${this.consentDetail.style_configuration.consent_detail.text_color};
-            margin: 0;
-        }
-
-        #modal-content-topic,
-        #modal-full-content-topic,
-        .mobile-modal-content-topic {
-            margin: 0;
-            color: #5A5F5F;
-            font-size: 1.2rem;
-            font-weight: 500;
-        }
-
-        .modal-content p {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #303131;
-        }
-
-        #modal-content-footer-container,
-        .mobile-modal-content-footer-container {
-            padding-top: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .mobile-modal-content-footer-container {
-            margin: 0 10px;
-        }
-
-        #full-version-btn-container .modal-content-footer-text,
-        .mobile-full-version-btn-container>.modal-content-footer-text {
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .modal-content-footer-text {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: ${this.consentDetail.style_configuration.consent_detail.text_color};
-        }
-
-        #accept-by-type-toggle-container {
-            display: flex;
-            align-items: center;
-        }
-
-        #consent-message-modal-footer-container {
-            margin-top: 20px;
-        }
-
-        #consent-message-modal-footer-container button {
-            color: ${this.consentDetail.style_configuration.consent_detail.button_text_color};
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `599px`}) {
-            #consent-message-modal-footer-container {
-                margin-top: 10px;
-            }
-        }
-
-        #brief-description-consent-message-btn-container {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        #full-description-consent-message-btn-container {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .consent-message-save-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: ${this.consentDetail.style_configuration.consent_detail.primary_color};
-            margin-right: 8px;
-            width: 150px;
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `599px`}) {
-            #full-description-consent-message-btn-container .consent-message-save-button {
-                display: none !important;
-            }
-        }
-
-        .consent-message-accept-button {
-            background-color: ${this.consentDetail.style_configuration.consent_detail.secondary_color};
-            width: 150px;
-        }
-
-        .consent-message-back-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: ${this.consentDetail.style_configuration.consent_detail.secondary_color};
-        }
-
-        .consent-message-btn-container button {
-            border: none;
-            border-radius: 7px;
-            padding: 10px 20px;
-            color: ${this.consentDetail.style_configuration.consent_detail.button_text_color};
-            cursor: pointer;
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `599px`}) {
-            #brief-description-consent-message-btn-container {
-                width: 70%;
-                margin-left: auto;
-            }
-            #brief-description-consent-message-btn-container button {
-                padding: 10px 5px;
-                font-size: 10px;
-            }
-            #full-description-consent-message-btn-container button {
-                padding: 10px;
-            }
-        }
-
-        .btn-icon-img {
-            width: auto;
-            height: 15px;
-            filter: invert(100%);
-            -webkit-filter: invert(100%);
-            margin-right: 8px;
-        }
-
-        ::-webkit-scrollbar {
-            -webkit-appearance: none;
-            width: 7px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            border-radius: 4px;
-            background-color: rgba(0, 0, 0, .5);
-            box-shadow: 0 0 1px rgba(255, 255, 255, .5);
-        }
-        /* The switch - the box around the slider */
-
-        .accept-by-type-switch {
-            position: relative;
-            display: inline-block;
-            width: 30px;
-            height: 17px;
-            margin-right: 7px;
-        }
-        /* Hide default HTML checkbox */
-
-        .accept-by-type-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        /* The slider */
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #EBEBEB;
-            -webkit-transition: .4s;
-            transition: .4s;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 13px;
-            width: 13px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
-        }
-
-        input:checked+.slider {
-            background-color: #71D879;
-        }
-
-        input:focus+.slider {
-            box-shadow: 0 0 1px #71D879;
-        }
-
-        input:checked+.slider:before {
-            -webkit-transform: translateX(13px);
-            -ms-transform: translateX(13px);
-            transform: translateX(13px);
-        }
-        /* Rounded sliders */
-
-        .slider.round {
-            border-radius: 34px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-        .hide-element {
-            display: none !important;
-        }
-        /* Mobile Reponsive Consent Message */
-
-        #mobile-consent-message-container {
-            display: flex;
-            flex-direction: column;
-            height: 80%;
-            border: 1px solid #C6C6C6;
-            flex-basis: 80%;
-            z-index: 2;
-            margin-bottom: auto;
-            border-radius: 8px 8px 0 0;
-            overflow-y: scroll;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        #mobile-consent-message-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        @media only screen and (min-width: ${this.previewMode ? `376px` : `769px`}) {
-            #mobile-consent-message-container {
-                display: none;
-            }
-        }
-
-        .mobile-consent-detail-type-tab,
-        .mobile-consent-message-content-container {
-            border-bottom: 1px solid #C6C6C6;
-        }
-
-        .mobile-consent-detail-type {
-            margin-right: auto;
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `599px`}) {
-            .mobile-consent-detail-type {
-                font-size: 12px !important;
-            }
-        }
-
-        .arrow {
-            border: solid #C7C7C7;
-            border-width: 0 3px 3px 0;
-            display: inline-block;
-            padding: 3px;
-        }
-
-        .down {
-            transform: rotate(45deg);
-            -webkit-transform: rotate(45deg);
-        }
-
-        .mobile-consent-message-content-container {
-            transition: all 0.2s ease;
-            position: relative;
-            padding: 0px 10px;
-        }
-
-        .mobile-consent-message-description-container {
-            flex-basis: 80%;
-            overflow-y: scroll;
-            margin-bottom: auto;
-            max-height: 100%;
-            height: 120px;
-            margin: 0 0 0 10px;
-        }
-
-        .mobile-consent-message-description {
-            font-size: 0.9rem;
-            color: ${this.consentDetail.style_configuration.consent_detail.text_color};
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .mobile-accept-by-type-toggle-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .is-expanded .mobile-consent-message-content-container {
-            max-height: 1000px;
-            min-height: 200px;
-            overflow: visible;
-            padding: 15px 10px 20px;
-            opacity: 1;
-        }
-
-        .is-collapsed .mobile-consent-message-content-container {
-            max-height: 0;
-            min-height: 0;
-            overflow: hidden;
-            opacity: 0;
-        }
-
-        #full-consent-message-container {
-            border-radius: 8px;
-        }
-
-        .highlight-mobile-type-tab {
-            box-shadow: 0px 8px 15px #0000002c;
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `768px`}) {
-            .modal-content-topic-container {
-                margin: 0 10px 10px;
-            }
-        }
-
-        @media only screen and (max-width: ${this.previewMode ? `375px` : `599px`} {
-            .consent-message-topic h3 {
-                font-size: 13px;
-            }
-            #mobile-consent-message-container h4 {
-                font-size: 13px;
-            }
-            #mobile-consent-message-container p {
-                font-size: 13px;
-            }
-            .is-expanded .mobile-consent-message-content-container {
-                padding: 10px;
-            }
-            .modal-content-topic-container {
-                margin: 0 0 10px;
-            }
-            .mobile-consent-message-description-container {
-                margin: 0px;
-            }
-            .mobile-modal-content-footer-container {
-                margin: 0px;
-            }
-        }
+      .top-bar {
+        color: <%= it.PRIMARY_COLOR %>;
+
+        display: flex;
+        flex-grow: 0;
+      }
+      .pop-up-main-icon {
+        height: 40px;
+      }
+      .top-bar .title {
+        font-weight: bold;
+        font-size: 1.5em;
+        margin: 0;
+        text-transform: uppercase;
+      }
+
+      .x-icon {
+        margin-left: auto;
+        margin-bottom: 5px;
+        position: relative;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 1;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .x-icon::before {
+        color: <%= it.PRIMARY_COLOR %>;
+        content: "\2715";
+      }
+
+      .consent-type-title {
+        margin: 0 0 0 20px;
+        color: <%= it.TEXT_COLOR %>;
+      }
+      .consent-body {
+        border: solid 1px #c6c6c6;
+        border-radius: 10px;
+        flex-grow: 1;
+        display: flex;
+        overflow: auto;
+      }
+      .action-bar {
+        display: flex;
+        margin-top: 10px;
+      }
+      .accept-all-btn {
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        height: 40px;
+        width: 150px;
+        color: <%= it.BUTTON_TEXT_COLOR %>;
+        background-color: <%= it.PRIMARY_COLOR %>;
+      }
+      .save-btn {
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        height: 40px;
+        width: 150px;
+        margin-left: auto;
+        margin-right: 20px;
+        color: <%= it.BUTTON_TEXT_COLOR %>;
+        background-color: <%= it.SECONDARY_COLOR %>;
+      }
+
+      .consent-body .tab {
+        width: 230px;
+        background-color: #ebebeb;
+        border-right: 1px solid #c6c6c6;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        overflow: scroll;
+        overflow-x: hidden;
+      }
+
+      .consent-body .tab .tab-item {
+        width: 100%;
+        height: 40px;
+        padding: 10px;
+        flex-grow: 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .tab-content {
+        display: none;
+        flex-grow: 1;
+        overflow: scroll;
+        padding: 10px;
+      }
+
+      .tab-content-active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .consent-body .tab .active {
+        background-color: #fff;
+      }
+
+      .content {
+        display: flex;
+        flex-grow: 1;
+      }
+      .active-consent-type-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 20px;
+        color: #9dda96;
+      }
+
+      .tab-content .content-title {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        flex-grow: 0;
+      }
+      .tab-content .content-desc {
+        font-size: 1rem;
+        flex-grow: 1;
+      }
+      .tab-content .content-action {
+        flex-grow: 0;
+        display: flex;
+        flex-direction: row;
+      }
+
+      .full-version-button {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .switch-on-off {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+      }
+    </style>
+
+    <style>
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        transform: scale(0.6);
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+      }
+
+      input:checked + .slider {
+        background-color: #8bd683;
+      }
+
+      input:focus + .slider {
+        box-shadow: 0 0 1px #8bd683;
+      }
+
+      input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+      }
+
+      /* Rounded sliders */
+      .slider.round {
+        border-radius: 34px;
+      }
+
+      .slider.round:before {
+        border-radius: 50%;
+      }
     </style>
   </head>
   <body>
-    <div>
-      <div id="consent-noti">
-        <div class="notification-close-btn close-btn"></div>
-        <div class="container">
-          <div id="consent-txt-container">
-            <div id="consent-txt">
-              <!-- consent text -->
-            </div>
-          </div>
-          <div id="consent-noti-btn-container">
-            <div id="language-btn-container"></div>
-            <div class="accept-btn">
-              <!-- button text -->
-            </div>
-          </div>
+    <div class="shadow-bg">
+      <div class="popup-body">
+        <div class="top-bar">
+          <svg class="pop-up-main-icon" viewBox="0 0 30 30">
+            <path
+              fill="currentColor"
+              d="M21,11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1L21,5V11M12,21C15.75,20 19,15.54 19,11.22V6.3L12,3.18V21Z"
+            />
+          </svg>
+          <h2 class="title"><%= it.POPUP_MAIN_ICON %></h2>
+          <h2 class="consent-type-title"><%= it.CONSENT_TYPE %></h2>
+          <div class="x-icon"></div>
         </div>
-      </div>
-
-      <div class="overlay" id="overlay"></div>
-
-      <div class="consent-message-modal" id="modal">
-        <div class="consent-message-topic-container">
-          <div class="consent-message-topic">
-            <div class="pop-up-main-icon-container">
-              <svg class="pop-up-main-icon" viewBox="0 0 30 30">
+        <div class="consent-body">
+          <div class="tab">
+            <% var tabNum = 0;%> <%
+            Object.keys(it.PERMISSIONS).forEach(function(key) { %>
+            <div class="tab-item" data-tabnum="<%= tabNum++; %>">
+              <svg class="active-consent-type-icon" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"
-                  d="M21,11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1L21,5V11M12,21C15.75,20 19,15.54 19,11.22V6.3L12,3.18V21Z"
-                />
+                  d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"
+                ></path>
               </svg>
-              <h2>
-                ${this.consentDetail.style_configuration.consent_detail.popup_main_icon.toUpperCase()}
-              </h2>
+              <%=it.PERMISSIONS[key].name %>
             </div>
-            <div class="consent-detail-title">
-              <h3>
-                <!-- consent detail title -->
-              </h3>
-            </div>
+            <% }) %>
           </div>
-          <div class="modal-lang-and-close-btn">
-            <div id="modal-language-btn-container"></div>
-            <div id="modal-close-btn" class="modal-close-btn close-btn"></div>
-          </div>
-        </div>
-        <div class="consent-message-container" id="consent-message-container">
-          <div id="consent-detail-type-tab-bar"></div>
-          <div class="consent-message-content-container">
-            <div class="modal-content-topic-container">
-              <h4 id="modal-content-topic"></h4>
-            </div>
-            <div
-              class="consent-message-description-container"
-              id="modal-content-list"
-            ></div>
-            <div id="modal-content-footer-container">
-              <div id="full-version-btn-container">
-                <span class="modal-content-footer-text">
-                  <!-- full version btn -->
-                </span>
+
+          <div class="content">
+            <% var tabNum = 0;%> <%
+            Object.keys(it.PERMISSIONS).forEach(function(key) { %>
+            <div class="tab-content" data-tabnum="<%= tabNum++; %>">
+              <div class="content-title"><%=it.PERMISSIONS[key].name %></div>
+              <div class="content-desc">
+                <%= it.PERMISSIONS[key].shortDesc %>
               </div>
-              <div id="accept-by-type-toggle-container">
-                <!-- Accept btn -->
+              <div class="content-action">
+                <div class="full-version-button">Full Version</div>
+                <div class="switch-on-off">
+                  <label class="switch">
+                    <input
+                      type="checkbox"
+                      id="checkbox-<%= tabNum; %>"
+                      checked
+                    />
+                    <span class="slider round"></span>
+                  </label>
+                  Accept
+                </div>
               </div>
             </div>
+            <% }) %>
           </div>
         </div>
-        <div
-          class="consent-message-container hide-element"
-          id="full-consent-message-container"
-        >
-          <div class="consent-message-content-container">
-            <div class="modal-content-topic-container">
-              <h4 id="modal-full-content-topic"></h4>
-            </div>
-            <div
-              class="consent-message-description-container"
-              id="modal-full-content-list"
-            >
-              <!-- Full Description -->
-            </div>
-          </div>
-        </div>
-        <div id="mobile-consent-message-container">
-          <!-- Mobile Consent Message Body -->
-        </div>
-        <div id="consent-message-modal-footer-container">
-          <div
-            class="consent-message-btn-container"
-            id="brief-description-consent-message-btn-container"
-          >
-            <button class="consent-message-save-button">Save Setting</button>
-            <button class="consent-message-accept-button">Accept All</button>
-          </div>
-          <div
-            class="consent-message-btn-container hide-element"
-            id="full-description-consent-message-btn-container"
-          >
-            <button class="consent-message-back-button">
-              <img
-                class="btn-icon-img"
-                src="https://static.thenounproject.com/png/2916775-200.png"
-                alt="go-back-icon"
-              />Back
-            </button>
-            <!-- <button class="consent-message-save-button"><img class="btn-icon-img" src="https://icon-library.com/images/icon-download-png/icon-download-png-20.jpg" alt="download-icon" />Download</button> -->
-          </div>
+        <div class="action-bar">
+          <button class="save-btn">Save Setting</button>
+          <button class="accept-all-btn">Accept All</button>
         </div>
       </div>
     </div>

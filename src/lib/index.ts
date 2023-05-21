@@ -80,7 +80,6 @@ class PamTracker {
   }
 
   private initialize(config: IConfig) {
-    console.log("INIT PAM");
     this.api = new PamAPI(config.baseApi);
 
     //Contact state will handle the state inside plugins/login_state.ts

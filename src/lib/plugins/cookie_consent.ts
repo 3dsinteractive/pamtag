@@ -1,13 +1,24 @@
 import PamTracker from "..";
 import { Plugin } from "../core/plugin";
+import { ConsentPopup } from "../ui/consent_popup";
 import { CookieConsentBatUI } from "../ui/cookie_consent_bar";
 
 export class CookieConsentPlugin extends Plugin {
   private pam: PamTracker;
-  private cookieConsentBar: CookieConsentBatUI;
+  private cookieConsentBar?: CookieConsentBatUI;
+  private consentPopup?: ConsentPopup;
 
   override initPlugin(pam: PamTracker): void {
     this.pam = pam;
+    this.cookieConsentBar = new CookieConsentBatUI(this.pam);
+    this.cookieConsentBar.attachShadowDom(true);
+
+    this.consentPopup = new ConsentPopup(pam);
+    this.consentPopup.attachShadowDom(true);
+
+    this.cookieConsentBar.onOpenMoreInfo = (consentMessage) => {
+      this.consentPopup.show(consentMessage);
+    };
 
     pam.hook.onStartup(async (config) => {
       this.checkConsentPermission();
@@ -15,9 +26,6 @@ export class CookieConsentPlugin extends Plugin {
   }
 
   private async renderConsentBar(consentMessageId: string) {
-    this.cookieConsentBar = new CookieConsentBatUI(this.pam);
-    this.cookieConsentBar.attachShadowDom(true);
-
     const consentMessage = await this.pam.loadConsentDetail(consentMessageId);
     this.cookieConsentBar.show(consentMessage);
   }
