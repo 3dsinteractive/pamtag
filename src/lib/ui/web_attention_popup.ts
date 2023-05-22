@@ -52,6 +52,7 @@ export class WebAttentionPopup extends ShadowDom {
 
       xIcon.addEventListener("click", () => {
         this.removeAllChild();
+        this.destroy();
       });
 
       const container = div.getElementsByClassName("attention-container")[0];

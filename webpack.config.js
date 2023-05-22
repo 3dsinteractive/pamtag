@@ -15,8 +15,6 @@ const { version, name, license, repository, author } = getPackageJson(
 
 const banner = `
   ${name} v${version}
-  ${repository.url}
-
   Copyright (c) ${author.replace(/ *<[^)]*> */g, " ")} and project contributors.
 
   This source code is licensed under the ${license} license found in the

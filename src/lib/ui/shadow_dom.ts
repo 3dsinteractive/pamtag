@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import PamTracker from "..";
 import * as Eta from "eta";
 
@@ -7,10 +6,11 @@ export default class ShadowDom {
   hostId: string;
   root?: ShadowRoot;
   pam: PamTracker;
+  private static count = 0;
 
   constructor(pam: PamTracker) {
     this.pam = pam;
-    this.hostId = `pam-${uuidv4()}`;
+    this.hostId = `pam-${ShadowDom.count++}`;
   }
 
   destroy() {
