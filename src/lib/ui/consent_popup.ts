@@ -1,11 +1,22 @@
 import PamTracker from "..";
-import { IConsentDetailByType } from "../interface/consent_message";
+import {
+  IConsentDetailByType,
+  IConsentPermission,
+} from "../interface/consent_message";
 import { ConsentMessage } from "../interface/consent_message";
 import ShadowDom from "../ui/shadow_dom";
 import htmlContent from "./html/consent_popup.html";
 
 export class ConsentPopup extends ShadowDom {
+  private consentMessage: ConsentMessage;
+  private popupDom: HTMLElement;
+  private currentFullDescItem = -1;
+
+  onSaveConfig: (consentMessage: ConsentMessage) => void;
+
   show(consentMessage: ConsentMessage) {
+    this.consentMessage = consentMessage;
+
     const primaryColor =
       consentMessage.data.style_configuration.consent_detail.primary_color;
 
@@ -25,101 +36,6 @@ export class ConsentPopup extends ShadowDom {
         ? "Tracking Consent"
         : "Contacting Consent";
 
-    const permissions: any[] = [];
-
-    permissions.push(
-      this.createPermissionObject(
-        "Terms & Conditions",
-        consentMessage.data.setting.terms_and_conditions
-      )
-    );
-
-    permissions.push(
-      this.createPermissionObject(
-        "Privacy Overview",
-        consentMessage.data.setting.privacy_overview
-      )
-    );
-
-    if (consentMessage.data.setting.necessary_cookies.is_enabled) {
-      permissions.push(
-        this.createPermissionObject(
-          "Necessary Cookies",
-          consentMessage.data.setting.necessary_cookies
-        )
-      );
-    }
-
-    if (consentMessage.data.setting.preferences_cookies.is_enabled) {
-      permissions.push(
-        this.createPermissionObject(
-          "Preferences Cookies",
-          consentMessage.data.setting.preferences_cookies
-        )
-      );
-    }
-
-    if (consentMessage.data.setting.analytics_cookies.is_enabled) {
-      permissions.push(
-        this.createPermissionObject(
-          "Analytics Cookies",
-          consentMessage.data.setting.analytics_cookies
-        )
-      );
-    }
-    if (consentMessage.data.setting.marketing_cookies.is_enabled) {
-      permissions.push(
-        this.createPermissionObject(
-          "Marketing Cookies",
-          consentMessage.data.setting.marketing_cookies
-        )
-      );
-    }
-    if (consentMessage.data.setting.social_media_cookies.is_enabled) {
-      permissions.push(
-        this.createPermissionObject(
-          "Social Media Cookies",
-          consentMessage.data.setting.social_media_cookies
-        )
-      );
-    }
-
-    if (consentMessage.data.setting.email.is_enabled) {
-      permissions.push(
-        this.createPermissionObject("Email", consentMessage.data.setting.email)
-      );
-    }
-
-    if (consentMessage.data.setting.sms.is_enabled) {
-      permissions.push(
-        this.createPermissionObject("SMS", consentMessage.data.setting.sms)
-      );
-    }
-
-    if (consentMessage.data.setting.line.is_enabled) {
-      permissions.push(
-        this.createPermissionObject("Line", consentMessage.data.setting.line)
-      );
-    }
-
-    if (consentMessage.data.setting.facebook_messenger.is_enabled) {
-      permissions.push(
-        this.createPermissionObject(
-          "Facebook Messenger",
-          consentMessage.data.setting.facebook_messenger
-        )
-      );
-    }
-
-    if (consentMessage.data.setting.push_notification.is_enabled) {
-      permissions.push(
-        this.createPermissionObject(
-          "Push Notification",
-          consentMessage.data.setting.push_notification
-        )
-      );
-    }
-
     const variables = {
       PRIMARY_COLOR: primaryColor,
       SECONDARY_COLOR: secondaryColor,
@@ -127,26 +43,139 @@ export class ConsentPopup extends ShadowDom {
       CONSENT_TYPE: consentTypeHeader,
       TEXT_COLOR: textColor,
       BUTTON_TEXT_COLOR: buttonTextColor,
-      PERMISSIONS: permissions,
+      PERMISSIONS_COUNT: this.consentMessage.permission.length,
+      PERMISSIONS: this.consentMessage.permission,
     };
 
-    const div = this.addHtmlTemplate(htmlContent, variables);
-    this.initTabAction(div);
+    this.popupDom = this.addHtmlTemplate(htmlContent, variables);
+    this.popupDom
+      .getElementsByClassName("x-icon")[0]
+      .addEventListener("click", () => {
+        this.removeAllChild();
+      });
+    this.initTabEvent(this.popupDom);
+    this.setDescriptioText(this.popupDom);
+    this.initPermissionSwitchEvent(this.popupDom);
+    this.initFullDetailButton(this.popupDom);
+    this.initSaveButtonEvent(this.popupDom);
+  }
+  initSaveButtonEvent(popupDom: HTMLElement) {
+    popupDom
+      .getElementsByClassName("save-btn")[0]
+      .addEventListener("click", (e) => {
+        if (this.onSaveConfig) {
+          this.onSaveConfig(this.consentMessage);
+        }
+        this.removeAllChild();
+      });
+    popupDom
+      .getElementsByClassName("accept-all-btn")[0]
+      .addEventListener("click", (e) => {
+        this.consentMessage.allowAll();
+        if (this.onSaveConfig) {
+          this.onSaveConfig(this.consentMessage);
+        }
+        this.removeAllChild();
+      });
   }
 
-  private initTabAction(div: HTMLElement) {
+  private initFullDetailButton(popupDom: HTMLElement) {
+    const list = popupDom.getElementsByClassName("full-version-button");
+    for (let i = 0; i < list.length; i++) {
+      list[i].addEventListener("click", (e) => {
+        const btn = e.target as HTMLElement;
+        const index = Number(btn.dataset.index);
+        this.currentFullDescItem = index;
+        const consent = this.consentMessage.permission[index];
+
+        popupDom
+          .getElementsByClassName("consent-settings")[0]
+          .classList.add("gone");
+
+        popupDom
+          .getElementsByClassName("consent-settings-action-bar")[0]
+          .classList.add("gone");
+
+        popupDom
+          .getElementsByClassName("consent-full-desc")[0]
+          .classList.remove("gone");
+        popupDom.getElementsByClassName("consent-full-desc-body")[0].innerHTML =
+          this.getText(consent.fullDescription);
+
+        popupDom
+          .getElementsByClassName("consent-full-desc-action-bar")[0]
+          .classList.remove("gone");
+      });
+    }
+
+    //Bak BTN
+    popupDom
+      .getElementsByClassName("back-btn")[0]
+      .addEventListener("click", (e) => {
+        popupDom
+          .getElementsByClassName("consent-settings")[0]
+          .classList.remove("gone");
+
+        popupDom
+          .getElementsByClassName("consent-settings-action-bar")[0]
+          .classList.remove("gone");
+
+        popupDom
+          .getElementsByClassName("consent-full-desc")[0]
+          .classList.add("gone");
+        popupDom
+          .getElementsByClassName("consent-full-desc-action-bar")[0]
+          .classList.add("gone");
+      });
+  }
+
+  private initPermissionSwitchEvent(div: HTMLElement) {
+    for (let i in this.consentMessage.permission) {
+      const checkBox = div.getElementsByClassName(`checkbox-${i}`)[0];
+
+      checkBox.addEventListener("change", (e: any) => {
+        const index = Number(e.target.dataset.index);
+        this.consentMessage.permission[index].allow = e.target.checked;
+
+        const icon = this.popupDom.getElementsByClassName(
+          `tab-icon-${index}`
+        )[0] as HTMLElement;
+
+        if (e.target.checked) {
+          icon.classList.remove("hide");
+        } else {
+          icon.classList.add("hide");
+        }
+      });
+    }
+  }
+
+  private setDescriptioText(div: HTMLElement) {
+    for (let i in this.consentMessage.permission) {
+      const p = this.consentMessage.permission[i];
+
+      div.getElementsByClassName(`title-${i}`)[0].innerHTML = p.name;
+      div.getElementsByClassName(`desc-${i}`)[0].innerHTML = this.getText(
+        p.briefDescription
+      );
+      if (p.isFullDescriptionEnabled) {
+        div.getElementsByClassName(`fulldesc-${i}`)[0].classList.remove("hide");
+      } else {
+        div.getElementsByClassName(`fulldesc-${i}`)[0].classList.add("hide");
+      }
+    }
+  }
+
+  private initTabEvent(div: HTMLElement) {
     const tabList = div.querySelectorAll(".tab-item");
     const tabContentList = div.querySelectorAll(".tab-content");
-
     let focusTab: HTMLElement;
     let focusTabContent: HTMLElement;
-
     for (var i = 0; i < tabList.length; i++) {
       const tab = tabList[i] as HTMLElement;
       if (i === 0) {
         focusTab = tab;
         tab.classList.add("active");
-
         focusTabContent = tabContentList[i] as HTMLElement;
         console.log(focusTabContent);
         tabContentList[i].classList.add("tab-content-active");
@@ -158,24 +187,11 @@ export class ConsentPopup extends ShadowDom {
         }
         focusTab = e.target as HTMLElement;
         focusTab.classList.add("active");
-
         let index = Number(focusTab.dataset.tabnum);
         focusTabContent = tabContentList[index] as HTMLElement;
         focusTabContent.classList.add("tab-content-active");
       });
     }
-  }
-
-  private createPermissionObject(
-    name: string,
-    perm: IConsentDetailByType
-  ): any {
-    return {
-      name: name,
-      consent: perm,
-      shortDesc: this.getText(perm.brief_description),
-      longDesc: this.getText(perm.full_description),
-    };
   }
 
   private getText(obj: any) {

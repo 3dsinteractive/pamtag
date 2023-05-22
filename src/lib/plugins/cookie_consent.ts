@@ -16,6 +16,11 @@ export class CookieConsentPlugin extends Plugin {
     this.consentPopup = new ConsentPopup(pam);
     this.consentPopup.attachShadowDom(true);
 
+    this.consentPopup.onSaveConfig = (consentMessage) => {
+      this.pam.submitConsent(consentMessage);
+      this.cookieConsentBar.removeAllChild();
+    };
+
     this.cookieConsentBar.onOpenMoreInfo = (consentMessage) => {
       this.consentPopup.show(consentMessage);
     };

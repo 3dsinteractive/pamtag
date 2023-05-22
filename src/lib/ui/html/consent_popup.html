@@ -82,6 +82,7 @@
         margin-top: 10px;
       }
       .accept-all-btn {
+        cursor: pointer;
         border: none;
         outline: none;
         border-radius: 10px;
@@ -91,6 +92,7 @@
         background-color: <%= it.PRIMARY_COLOR %>;
       }
       .save-btn {
+        cursor: pointer;
         border: none;
         outline: none;
         border-radius: 10px;
@@ -145,8 +147,7 @@
       .active-consent-type-icon {
         width: 20px;
         height: 20px;
-        margin-right: 20px;
-        color: #9dda96;
+        color: #71D879;
       }
 
       .tab-content .content-title {
@@ -215,11 +216,11 @@
       }
 
       input:checked + .slider {
-        background-color: #8bd683;
+        background-color: #71D879;
       }
 
       input:focus + .slider {
-        box-shadow: 0 0 1px #8bd683;
+        box-shadow: 0 0 1px #71D879;
       }
 
       input:checked + .slider:before {
@@ -235,6 +236,48 @@
 
       .slider.round:before {
         border-radius: 50%;
+      }
+      .switch-0{
+        visibility: hidden;
+      }
+      .switch-1{
+        visibility: hidden;
+      }
+      .hide {
+        visibility: hidden;
+      }
+      .gone{
+        display: none !important;
+      }
+      .back-icon{
+        margin-right: 10px;
+      }
+      .back-icon:before{
+        content: "\276E";
+      }
+      
+      .chack-mark:after{
+        content: "\2714"
+      }
+      .consent-full-desc{
+        display: flex;
+        padding: 10px;
+        overflow: scroll;
+      }
+
+      .back-btn{
+        cursor: pointer;
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        height: 40px;
+        width: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1em;;
+        color: <%= it.BUTTON_TEXT_COLOR %>;
+        background-color: <%= it.PRIMARY_COLOR %>;
       }
     </style>
   </head>
@@ -252,37 +295,34 @@
           <h2 class="consent-type-title"><%= it.CONSENT_TYPE %></h2>
           <div class="x-icon"></div>
         </div>
-        <div class="consent-body">
+        <div class="consent-body consent-settings">
           <div class="tab">
-            <% var tabNum = 0;%> <%
-            Object.keys(it.PERMISSIONS).forEach(function(key) { %>
-            <div class="tab-item" data-tabnum="<%= tabNum++; %>">
-              <svg class="active-consent-type-icon" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"
-                ></path>
-              </svg>
-              <%=it.PERMISSIONS[key].name %>
+            <% for(i in it.PERMISSIONS){ %>
+            <div class="tab-item" data-tabnum="<%= i %>">
+             
+              <div class="chack-mark active-consent-type-icon tab-icon-<%= i %>">
+
+              </div>
+
+              <%=it.PERMISSIONS[i].name %>
             </div>
-            <% }) %>
+            <% } %>
           </div>
 
           <div class="content">
-            <% var tabNum = 0;%> <%
-            Object.keys(it.PERMISSIONS).forEach(function(key) { %>
-            <div class="tab-content" data-tabnum="<%= tabNum++; %>">
-              <div class="content-title"><%=it.PERMISSIONS[key].name %></div>
-              <div class="content-desc">
-                <%= it.PERMISSIONS[key].shortDesc %>
-              </div>
+            <% var tabNum = 0;%> 
+            <% for(i=0; i<it.PERMISSIONS_COUNT; i++){ %>
+            <div class="tab-content" data-tabnum="<%= i %>">
+              <div  class="content-title title-<%= i %>"></div>
+              <div  class="content-desc desc-<%= i %>"></div>
               <div class="content-action">
-                <div class="full-version-button">Full Version</div>
-                <div class="switch-on-off">
+                <div class="full-version-button fulldesc-<%= i %>" data-index="<%= i %>">Full Version</div>
+                <div class="switch-on-off switch-<%= i %>">
                   <label class="switch">
                     <input
                       type="checkbox"
-                      id="checkbox-<%= tabNum; %>"
+                      class="checkbox-<%= i %>"
+                      data-index="<%= i%>"
                       checked
                     />
                     <span class="slider round"></span>
@@ -291,13 +331,21 @@
                 </div>
               </div>
             </div>
-            <% }) %>
+            <% } %>
           </div>
         </div>
-        <div class="action-bar">
+        <div class="action-bar consent-settings-action-bar">
           <button class="save-btn">Save Setting</button>
           <button class="accept-all-btn">Accept All</button>
         </div>
+
+        <div class="consent-body gone consent-full-desc">
+            <div class="consent-full-desc-body"></div>
+        </div>
+        <div class="action-bar consent-full-desc-action-bar gone">
+            <button class="back-btn"><div class="back-icon"></div>Back</button>
+        </div>
+
       </div>
     </div>
   </body>
