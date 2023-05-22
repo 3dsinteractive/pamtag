@@ -19,11 +19,14 @@ body{
 }
 </style>`;
 
-document.querySelector("body").innerHTML = `<h1>Hello World!</h1>`;
+document.querySelector(
+  "body"
+).innerHTML = `<h1>Hello World!</h1><button id="openConsent">Consent</button>`;
+
+const tracking = "1qDQOyMeBv64LYnXi6dJOcZp2YQ";
+const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
 
 async function consent() {
-  const tracking = "1qDQOyMeBv64LYnXi6dJOcZp2YQ";
-  const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
   const consents = await pam.loadConsentDetails([tracking, contact]);
 
   consents[tracking].allowAll();
@@ -32,6 +35,12 @@ async function consent() {
   pam.submitConsent(consents[tracking], true);
   pam.submitConsent(consents[contact], true);
 }
+
+var btn = document.getElementById("openConsent");
+btn.addEventListener("click", async (e) => {
+  const result = await pam.openConsentPopup(contact);
+  console.log(result);
+});
 
 //pam.track("start_demo", {}, true);
 //consent();

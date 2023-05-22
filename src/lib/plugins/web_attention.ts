@@ -100,6 +100,8 @@ export class WebAttenTionPlugin extends Plugin {
 
     if (Object.keys(attention).length > 0 && attention.constructor === Object) {
       this.initAttention(attention);
+    } else {
+      this.shadowDom.destroy();
     }
   }
 

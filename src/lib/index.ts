@@ -7,6 +7,8 @@ import { Utils } from "./utils";
 import { Hook } from "./core/hook";
 import { PluginRegistration } from "./plugins/index";
 import { ContactStateManager } from "./contact_state_manager";
+import { ConsentPopup } from "./ui/consent_popup";
+import { PopupConsentResult } from "./interface/popup_consent_result";
 
 class PamTracker {
   config: IConfig;
@@ -190,6 +192,34 @@ class PamTracker {
   async loadConsentDetail(consentMessageID: string) {
     const result = await this.api.loadConsentDetails([consentMessageID]);
     return result[consentMessageID];
+  }
+
+  async openConsentPopup(
+    consentMessageId: string
+  ): Promise<PopupConsentResult> {
+    return new Promise<PopupConsentResult>(async (resolve, reject) => {
+      const consentMessage = await this.loadConsentDetail(consentMessageId);
+      const popup = new ConsentPopup(this);
+      popup.attachShadowDom(true);
+      popup.show(consentMessage);
+      popup.onClose = async () => {
+        popup.destroy();
+        reject(new Error("User Not Allow Consent"));
+      };
+
+      popup.onSaveConfig = async (consentMessage) => {
+        popup.destroy();
+        try {
+          const result = await this.submitConsent(consentMessage);
+          resolve({
+            consent: consentMessage,
+            response: result,
+          });
+        } catch (e: any) {
+          reject(e);
+        }
+      };
+    });
   }
 }
 

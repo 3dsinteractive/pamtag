@@ -16,7 +16,7 @@ export class CookieConsentPlugin extends Plugin {
     this.consentPopup = new ConsentPopup(pam);
     this.consentPopup.attachShadowDom(true);
 
-    this.consentPopup.onSaveConfig = (consentMessage) => {
+    this.consentPopup.onSaveConfig = async (consentMessage) => {
       this.pam.submitConsent(consentMessage);
       this.cookieConsentBar.removeAllChild();
     };
@@ -47,11 +47,17 @@ export class CookieConsentPlugin extends Plugin {
       if (this.pam.config.displayCookieConsentBarOnStartup === true) {
         if (status.need_consent_review) {
           this.renderConsentBar(consentMessageId);
+        } else {
+          this.cookieConsentBar.destroy();
+          this.consentPopup.destroy();
         }
       }
     } else {
       if (this.pam.config.displayCookieConsentBarOnStartup === true) {
         this.renderConsentBar(consentMessageId);
+      } else {
+        this.cookieConsentBar.destroy();
+        this.consentPopup.destroy();
       }
     }
   }

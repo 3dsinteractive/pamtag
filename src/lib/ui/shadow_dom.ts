@@ -13,10 +13,18 @@ export default class ShadowDom {
     this.hostId = `pam-${uuidv4()}`;
   }
 
+  destroy() {
+    this.host.remove();
+    this.root = undefined;
+    this.host = undefined;
+  }
+
   removeAllChild() {
-    this.root.childNodes.forEach((node) => {
-      node.remove();
-    });
+    if (this.root) {
+      this.root.childNodes.forEach((node) => {
+        node.remove();
+      });
+    }
   }
 
   addHtmlTemplate(htmlContent: string, variable: Record<string, any>) {

@@ -12,7 +12,8 @@ export class ConsentPopup extends ShadowDom {
   private popupDom: HTMLElement;
   private currentFullDescItem = -1;
 
-  onSaveConfig: (consentMessage: ConsentMessage) => void;
+  onSaveConfig: (consentMessage: ConsentMessage) => Promise<void>;
+  onClose: () => Promise<void>;
 
   show(consentMessage: ConsentMessage) {
     this.consentMessage = consentMessage;
@@ -52,6 +53,9 @@ export class ConsentPopup extends ShadowDom {
       .getElementsByClassName("x-icon")[0]
       .addEventListener("click", () => {
         this.removeAllChild();
+        if (this.onClose) {
+          this.onClose();
+        }
       });
     this.initTabEvent(this.popupDom);
     this.setDescriptioText(this.popupDom);
