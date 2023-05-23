@@ -96,9 +96,9 @@ class PamTracker {
       this.config.sessionExpireTimeMinutes = 60;
     }
 
-    const pluginRegister = new PluginRegistration();
-    for (const i in pluginRegister.plugins) {
-      pluginRegister.plugins[i].initPlugin(this);
+    const plugins = PluginRegistration.getPlugins(config);
+    for (const i in plugins) {
+      plugins[i].initPlugin(this);
     }
 
     // Hook StartUp

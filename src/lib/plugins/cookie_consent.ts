@@ -1,8 +1,9 @@
 import PamTracker from "..";
 import { Plugin } from "../core/plugin";
+import { ICustomerConsentStatus } from "../interface/iconsent_status";
 import { ConsentPopup } from "../ui/consent_popup";
 import { CookieConsentBatUI } from "../ui/cookie_consent_bar";
-
+import { GoogleTagManager } from "./google_tag_manager";
 export class CookieConsentPlugin extends Plugin {
   private pam: PamTracker;
   private cookieConsentBar?: CookieConsentBatUI;
@@ -26,7 +27,11 @@ export class CookieConsentPlugin extends Plugin {
     };
 
     pam.hook.onStartup(async (config) => {
-      this.checkConsentPermission();
+      GoogleTagManager.initGTM();
+      const permissionStatus = await this.checkConsentPermission();
+      if (permissionStatus && config.gtmConsentMode) {
+        GoogleTagManager.updateConsentModeFromPamConsent(permissionStatus);
+      }
     });
   }
 
@@ -35,7 +40,7 @@ export class CookieConsentPlugin extends Plugin {
     this.cookieConsentBar.show(consentMessage);
   }
 
-  private async checkConsentPermission() {
+  private async checkConsentPermission(): Promise<ICustomerConsentStatus | null> {
     const consentMessageId = this.pam.config.trackingConsentMessageId;
     const contactId = this.pam.contactState.getContactId();
 
@@ -52,6 +57,7 @@ export class CookieConsentPlugin extends Plugin {
           this.consentPopup.destroy();
         }
       }
+      return status;
     } else {
       if (this.pam.config.displayCookieConsentBarOnStartup === true) {
         this.renderConsentBar(consentMessageId);
@@ -60,5 +66,6 @@ export class CookieConsentPlugin extends Plugin {
         this.consentPopup.destroy();
       }
     }
+    return;
   }
 }

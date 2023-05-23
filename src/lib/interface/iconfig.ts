@@ -10,4 +10,5 @@ export default interface IConfig {
   sessionExpireTimeMinutes?: number; // default 60 min
   displayCookieConsentBarOnStartup?: boolean;
   preferLanguage?: string;
+  gtmConsentMode?: boolean;
 }
