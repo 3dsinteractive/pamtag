@@ -39,8 +39,24 @@ async function consent() {
 var btn = document.getElementById("openConsent");
 btn.addEventListener("click", async (e) => {
   const result = await pam.openConsentPopup(contact);
-  console.log(result);
 });
 
 //pam.track("start_demo", {}, true);
 //consent();
+
+window.getPam().then(async (p) => {
+  p.track("event1", {}, true);
+  p.track("event2", {}, true);
+
+  const tracking = "1qDQOyMeBv64LYnXi6dJOcZp2YQ";
+  const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
+  const consents = await pam.loadConsentDetails([tracking, contact]);
+  consents[tracking].allowAll();
+  consents[contact].allowAll();
+  pam.submitConsent(consents[tracking], true, true);
+  pam.submitConsent(consents[contact], true);
+
+  p.track("event3-cookie-less", {}, true);
+  p.track("event4", {}, true);
+  p.track("event5", {}, true);
+});

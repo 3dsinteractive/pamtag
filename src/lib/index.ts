@@ -16,6 +16,7 @@ class PamTracker {
   contactState: ContactStateManager;
   hook = new Hook();
   utils = new Utils();
+  ready = false;
 
   queueManager = new QueueManager<ITrackerResponse>(50, async (jobs) => {
     if (jobs.length == 1) {
@@ -27,7 +28,6 @@ class PamTracker {
       jsonPayload = await this.hook.dispatchPreTracking(job.event, jsonPayload);
 
       const response = await this.api.postTracker(jsonPayload);
-
       // Hook Post Event
       this.hook.dispatchPostTracking(job.event, jsonPayload, response);
 
@@ -42,9 +42,10 @@ class PamTracker {
           job.event,
           jsonPayload
         );
-
         events.push(jsonPayload);
       }
+
+      console.log("POST", JSON.parse(JSON.stringify(events)));
 
       let useSameContact = true;
       if (events.length > 0 && events[0]._contact_id) {
@@ -56,7 +57,14 @@ class PamTracker {
       for (const i in response.results) {
         const r = response.results[i];
         const e = events[i];
-        this.hook.dispatchPostTracking(e.event, e, r);
+        let evt = "";
+
+        if (r.hasOwnProperty("event")) {
+          evt = e.event;
+        } else {
+          evt = "__error";
+        }
+        this.hook.dispatchPostTracking(evt, e, r);
       }
 
       return response.results;
@@ -66,6 +74,7 @@ class PamTracker {
   });
 
   constructor(config: IConfig) {
+    this.createGetPamFunction();
     if (!config.preferLanguage) {
       config.preferLanguage = "th";
     }
@@ -79,6 +88,25 @@ class PamTracker {
         this.initialize(config);
       }, 100);
     }
+  }
+
+  private createGetPamFunction() {
+    const w = window as any;
+    w.pam = this;
+    w.getPam = function () {
+      return new Promise(function (resolve) {
+        if (w.pam && w.pam.ready) {
+          resolve(w.pam);
+          return;
+        }
+        var intervalId = setInterval(function () {
+          if (w.pam !== null && typeof w.pam !== "undefined" && w.pam.ready) {
+            clearInterval(intervalId);
+            resolve(w.pam);
+          }
+        }, 50);
+      });
+    };
   }
 
   private initialize(config: IConfig) {
@@ -103,14 +131,19 @@ class PamTracker {
 
     // Hook StartUp
     this.hook.dispatchOnStartup(config);
+    this.ready = true;
   }
 
   buildEventPayload(job: RequestJob<ITrackerResponse>) {
     const payload = this.api.getDefaultPayload();
     payload.event = job.event;
 
-    const form_fields = { ...job.data };
+    let form_fields = { ...job.data };
     form_fields._consent_message_id = job.trackingConsentMessageId;
+
+    if (job.cookieLess === true) {
+      form_fields._cookie_less = true;
+    }
 
     payload.form_fields = {
       ...form_fields,
@@ -154,13 +187,15 @@ class PamTracker {
   async track(
     event: string,
     payload: Record<string, any> = {},
-    flushEventBefore: boolean = false
+    flushEventBefore: boolean = false,
+    cookieLess: boolean = false
   ) {
     const job: RequestJob<ITrackerResponse> = {
       event: event,
       trackingConsentMessageId: this.config.trackingConsentMessageId,
       data: payload,
       flushEventBefore: flushEventBefore,
+      cookieLess: cookieLess,
     };
 
     return this.queueManager.enqueueJob(job);
@@ -172,13 +207,15 @@ class PamTracker {
 
   async submitConsent(
     consent: ConsentMessage,
-    flushEventBefore: boolean = false
+    flushEventBefore: boolean = false,
+    cookieLess: boolean = false
   ) {
     const job: RequestJob<ITrackerResponse> = {
       event: "allow_consent",
       trackingConsentMessageId: consent.data.consent_message_id,
       data: consent.buildFormField(),
       flushEventBefore: flushEventBefore,
+      cookieLess,
     };
 
     return this.queueManager.enqueueJob(job);

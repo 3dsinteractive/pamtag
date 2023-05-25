@@ -181,7 +181,7 @@ export class ConsentPopup extends ShadowDom {
         focusTab = tab;
         tab.classList.add("active");
         focusTabContent = tabContentList[i] as HTMLElement;
-        console.log(focusTabContent);
+
         tabContentList[i].classList.add("tab-content-active");
       }
       tab.addEventListener("click", (e) => {

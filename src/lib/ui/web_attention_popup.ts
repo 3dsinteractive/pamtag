@@ -47,7 +47,6 @@ export class WebAttentionPopup extends ShadowDom {
       };
 
       const div = this.addHtmlTemplate(htmlContent, variables);
-      //console.log(div.innerHTML);
       const xIcon = div.getElementsByClassName("x-icon")[0];
 
       xIcon.addEventListener("click", () => {

@@ -22,7 +22,7 @@ export class Hook {
   cleanListener: SystemListener[] = [];
 
   private isMatchEvent(srcEvent: string, listen: any) {
-    if (listen === "*") {
+    if (listen === "*" && srcEvent != "__error") {
       return true;
     } else if (listen.constructor.name === "RegExp") {
       return (listen as RegExp).test(srcEvent);

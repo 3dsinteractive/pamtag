@@ -3,6 +3,7 @@ export type RequestJob<T> = {
   trackingConsentMessageId: string;
   data?: Record<string, any>;
   flushEventBefore: boolean;
+  cookieLess?: boolean;
   resolve?: (value: T | PromiseLike<T>) => void;
   reject?: (reason?: any) => void;
 };
@@ -45,11 +46,16 @@ export class QueueManager<T> {
       const jobs: RequestJob<T>[] = [];
 
       while (this.jobs.length > 0) {
-        if (this.jobs[0].flushEventBefore && jobs.length > 0) {
+        if (
+          this.jobs[0].cookieLess &&
+          this.jobs[0].flushEventBefore &&
+          jobs.length > 0
+        ) {
           break;
+        } else {
+          const job = this.jobs.shift();
+          jobs.push(job);
         }
-        const job = this.jobs.shift();
-        jobs.push(job);
       }
 
       try {
