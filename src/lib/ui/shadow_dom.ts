@@ -14,9 +14,11 @@ export default class ShadowDom {
   }
 
   destroy() {
-    this.host.remove();
-    this.root = undefined;
-    this.host = undefined;
+    if (typeof this.host !== "undefined") {
+      this.host.remove();
+      this.root = undefined;
+      this.host = undefined;
+    }
   }
 
   removeAllChild() {
