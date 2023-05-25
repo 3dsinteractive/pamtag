@@ -45,8 +45,6 @@ class PamTracker {
         events.push(jsonPayload);
       }
 
-      console.log("POST", JSON.parse(JSON.stringify(events)));
-
       let useSameContact = true;
       if (events.length > 0 && events[0]._contact_id) {
         useSameContact = false;
@@ -203,6 +201,54 @@ class PamTracker {
 
   async cleanPamCookies() {
     this.hook.dispatchOnClean(this.config);
+  }
+
+  async allowAllContactConsent(
+    consentId: string,
+    flushEventBefore: boolean = false,
+    cookieLess: boolean = false
+  ) {
+    const job: RequestJob<ITrackerResponse> = {
+      event: "allow_consent",
+      trackingConsentMessageId: consentId,
+      data: {
+        _version: "latest",
+        _allow_terms_and_conditions: true,
+        _allow_privacy_overview: true,
+        _allow_email: true,
+        _allow_sms: true,
+        _allow_line: true,
+        _allow_facebook_messenger: true,
+        _allow_push_notification: true,
+      },
+      flushEventBefore: flushEventBefore,
+      cookieLess: cookieLess,
+    };
+    return this.queueManager.enqueueJob(job);
+  }
+
+  async allowAllTrackingConsent(
+    consentId: string,
+    flushEventBefore: boolean = false,
+    cookieLess: boolean = false
+  ) {
+    const job: RequestJob<ITrackerResponse> = {
+      event: "allow_consent",
+      trackingConsentMessageId: consentId,
+      data: {
+        _version: "latest",
+        _allow_terms_and_conditions: true,
+        _allow_privacy_overview: true,
+        _allow_necessary_cookies: true,
+        _allow_preferences_cookies: true,
+        _allow_analytics_cookies: true,
+        _allow_marketing_cookies: true,
+        _allow_social_media_cookies: true,
+      },
+      flushEventBefore: flushEventBefore,
+      cookieLess: cookieLess,
+    };
+    return this.queueManager.enqueueJob(job);
   }
 
   async submitConsent(
