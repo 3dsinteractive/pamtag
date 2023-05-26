@@ -45,10 +45,21 @@ btn.addEventListener("click", async (e) => {
 //consent();
 
 (window as any).getPam().then(async (p) => {
-  p.track("event1", {});
-  p.track("event2", {});
-  p.track("event3", {}, true, true);
-  p.track("event4", {});
+  p.eventBucket(() => {
+    p.track("event7", {});
+    p.track("event8", {});
+    p.track("event9", {});
+  });
+
+  p.track("event10", {});
+  p.track("event11", {});
+  // p.allowAllTrackingConsent("1qDQOyMeBv64LYnXi6dJOcZp2YQ", false, false, {
+  //   customer: 12345,
+  // });
+  // p.track("event1", {});
+  // p.track("event2", {});
+  // p.track("event3", {}, true, true);
+  // p.track("event4", {});
   // const tracking = "1qDQOyMeBv64LYnXi6dJOcZp2YQ";
   // const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
   // const consents = await pam.loadConsentDetails([tracking, contact]);

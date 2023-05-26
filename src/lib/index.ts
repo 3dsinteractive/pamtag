@@ -199,6 +199,12 @@ class PamTracker {
     return this.queueManager.enqueueJob(job);
   }
 
+  eventBucket(callBack: () => void) {
+    this.queueManager.openBucket();
+    callBack();
+    this.queueManager.closeBucket();
+  }
+
   async cleanPamCookies() {
     this.hook.dispatchOnClean(this.config);
   }

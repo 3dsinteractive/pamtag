@@ -13,6 +13,7 @@ export class QueueManager<T> {
   private running = false;
   private waitingForBulk = false;
   private bulkTimeout;
+  private isBucketOpen = false;
 
   public callback: (job: RequestJob<T>[]) => Promise<T[]>;
 
@@ -24,11 +25,23 @@ export class QueueManager<T> {
     this.callback = callback;
   }
 
+  openBucket() {
+    this.isBucketOpen = true;
+  }
+
+  closeBucket() {
+    this.isBucketOpen = false;
+    this.runQueue();
+  }
+
   enqueueJob(job: RequestJob<T>): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       job.reject = reject;
       job.resolve = resolve;
       this.jobs.push(job);
+      if (this.isBucketOpen) {
+        return;
+      }
       if (!this.running && !this.waitingForBulk) {
         this.waitingForBulk = true;
 
