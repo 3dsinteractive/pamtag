@@ -206,7 +206,8 @@ class PamTracker {
   async allowAllContactConsent(
     consentId: string,
     flushEventBefore: boolean = false,
-    cookieLess: boolean = false
+    cookieLess: boolean = false,
+    extrasPayload: Record<string, any> = {}
   ) {
     const job: RequestJob<ITrackerResponse> = {
       event: "allow_consent",
@@ -220,6 +221,7 @@ class PamTracker {
         _allow_line: true,
         _allow_facebook_messenger: true,
         _allow_push_notification: true,
+        ...extrasPayload,
       },
       flushEventBefore: flushEventBefore,
       cookieLess: cookieLess,
@@ -230,7 +232,8 @@ class PamTracker {
   async allowAllTrackingConsent(
     consentId: string,
     flushEventBefore: boolean = false,
-    cookieLess: boolean = false
+    cookieLess: boolean = false,
+    extrasPayload: Record<string, any> = {}
   ) {
     const job: RequestJob<ITrackerResponse> = {
       event: "allow_consent",
@@ -244,6 +247,7 @@ class PamTracker {
         _allow_analytics_cookies: true,
         _allow_marketing_cookies: true,
         _allow_social_media_cookies: true,
+        ...extrasPayload,
       },
       flushEventBefore: flushEventBefore,
       cookieLess: cookieLess,
@@ -254,12 +258,18 @@ class PamTracker {
   async submitConsent(
     consent: ConsentMessage,
     flushEventBefore: boolean = false,
-    cookieLess: boolean = false
+    cookieLess: boolean = false,
+    extrasPayload: Record<string, any> = {}
   ) {
+    var payload = {
+      ...consent.buildFormField(),
+      ...extrasPayload,
+    };
+
     const job: RequestJob<ITrackerResponse> = {
       event: "allow_consent",
       trackingConsentMessageId: consent.data.consent_message_id,
-      data: consent.buildFormField(),
+      data: payload,
       flushEventBefore: flushEventBefore,
       cookieLess,
     };
