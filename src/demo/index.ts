@@ -3,8 +3,8 @@ const pam = new PamTracker({
   webPushPublicKey: "",
   baseApi: "https://stgx.pams.ai",
   trackingConsentMessageId: "1qDQOyMeBv64LYnXi6dJOcZp2YQ",
-  publicDBAlias: "my-ecommerce-public",
-  loginDBAlias: "my-ecommerce-login",
+  publicDBAlias: "win-test-sms",
+  loginDBAlias: "win-test-sms",
   loginKey: "customer",
   autoTrackPageview: true,
   displayCookieConsentBarOnStartup: true,
@@ -38,15 +38,29 @@ async function consent() {
 
 var btn = document.getElementById("openConsent");
 btn.addEventListener("click", async (e) => {
-  const result = await pam.openConsentPopup(contact);
+  //const result = await pam.openConsentPopup(contact);
+
+  (window as any).getPam().then(async (p) => {
+    p.eventBucket(() => {
+      p.allowAllTrackingConsent("1qDQOyMeBv64LYnXi6dJOcZp2YQ", true, false, {
+        sms: "0876666679",
+      });
+      p.track("event90", { sms: "0876666679" });
+      p.allowAllContactConsent("1qDQOyMeBv64LYnXi6dJOcZp2YQ", true, false, {
+        sms: "0876666679",
+      });
+    });
+  });
 });
 
 //pam.track("start_demo", {}, true);
 //consent();
 
 (window as any).getPam().then(async (p) => {
+  p.allowAllTrackingConsent("1qDQOyMeBv64LYnXi6dJOcZp2YQ");
+  p.track("event6", { sms: "0876666668" });
   p.eventBucket(() => {
-    p.track("event7", {});
+    p.track("event7", {}, true, false);
     p.track("event8", {});
     p.track("event9", {});
   });

@@ -27,6 +27,7 @@ export class QueueManager<T> {
 
   openBucket() {
     this.isBucketOpen = true;
+    this.runQueue();
   }
 
   closeBucket() {
