@@ -3,9 +3,9 @@ const pam = new PamTracker({
   webPushPublicKey: "",
   baseApi: "https://stgx.pams.ai",
   trackingConsentMessageId: "1qDQOyMeBv64LYnXi6dJOcZp2YQ",
-  publicDBAlias: "win-test-sms",
-  loginDBAlias: "win-test-sms",
-  loginKey: "customer",
+  publicDBAlias: "ecom-public",
+  loginDBAlias: "ecom-public",
+  loginKey: "email",
   autoTrackPageview: true,
   displayCookieConsentBarOnStartup: true,
   preferLanguage: "th",
@@ -26,63 +26,38 @@ document.querySelector(
 const tracking = "1qDQOyMeBv64LYnXi6dJOcZp2YQ";
 const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
 
-async function consent() {
-  const consents = await pam.loadConsentDetails([tracking, contact]);
-
-  consents[tracking].allowAll();
-  consents[contact].allowAll();
-
-  pam.submitConsent(consents[tracking], true);
-  pam.submitConsent(consents[contact], true);
-}
-
 var btn = document.getElementById("openConsent");
 btn.addEventListener("click", async (e) => {
-  //const result = await pam.openConsentPopup(contact);
+  test();
+});
 
-  (window as any).getPam().then(async (p) => {
-    p.eventBucket(() => {
-      p.allowAllTrackingConsent("1qDQOyMeBv64LYnXi6dJOcZp2YQ", true, false, {
-        sms: "0876666679",
-      });
-      p.track("event90", { sms: "0876666679" });
-      p.allowAllContactConsent("1qDQOyMeBv64LYnXi6dJOcZp2YQ", true, false, {
-        sms: "0876666679",
+function test() {
+  window.getPam().then(function (pam) {
+    var payload = {
+      firstname: "heart",
+      lastname: "heart",
+      email: "fakemail@gmail2.com",
+      _allow_consent: true,
+      _version: "latest",
+      _allow_terms_and_conditions: true,
+      _allow_privacy_overview: true,
+      _allow_necessary_cookies: true,
+      _allow_preferences_cookies: true,
+      _allow_analytics_cookies: true,
+      _allow_marketing_cookies: true,
+      _allow_social_media_cookies: true,
+    };
+
+    pam.eventBucket(function () {
+      pam.track("confirm_insured_info", payload);
+      pam.allowAllContactConsent(contact, false, false, {
+        email: "fakemail@gmail2.com",
       });
     });
   });
-});
+}
 
-//pam.track("start_demo", {}, true);
-//consent();
-
-(window as any).getPam().then(async (p) => {
-  p.allowAllTrackingConsent("1qDQOyMeBv64LYnXi6dJOcZp2YQ");
-  p.track("event6", { sms: "0876666668" });
-  p.eventBucket(() => {
-    p.track("event7", {}, true, false);
-    p.track("event8", {});
-    p.track("event9", {});
-  });
-
-  p.track("event10", {});
-  p.track("event11", {});
-  // p.allowAllTrackingConsent("1qDQOyMeBv64LYnXi6dJOcZp2YQ", false, false, {
-  //   customer: 12345,
-  // });
-  // p.track("event1", {});
-  // p.track("event2", {});
-  // p.track("event3", {}, true, true);
-  // p.track("event4", {});
-  // const tracking = "1qDQOyMeBv64LYnXi6dJOcZp2YQ";
-  // const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
-  // const consents = await pam.loadConsentDetails([tracking, contact]);
-  // consents[tracking].allowAll();
-  // consents[contact].allowAll();
-  // pam.submitConsent(consents[tracking], true, true);
-  // pam.submitConsent(consents[contact], true);
-
-  // p.track("event3-cookie-less", {}, true);
-  // p.track("event4", {}, true);
-  // p.track("event5", {}, true);
+window.getPam().then((pam) => {
+  pam.track("test1", {});
+  pam.track("test2", {});
 });

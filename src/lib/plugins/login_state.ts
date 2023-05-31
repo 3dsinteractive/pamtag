@@ -21,7 +21,6 @@ export class LoginState extends Plugin {
         const loginId = payload.form_fields[loginKey];
         pam.contactState.login(loginId);
       }
-
       pam.contactState.setContactId(result.contact_id);
     });
 
