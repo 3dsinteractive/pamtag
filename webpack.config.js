@@ -13,10 +13,25 @@ const { version, name, license, repository, author } = getPackageJson(
   "author"
 );
 
+function now() {
+  let currentDate = new Date();
+  let options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    timeZoneName: "short",
+  };
+  let dateTimeString = currentDate.toLocaleString(undefined, options);
+  return dateTimeString;
+}
+
 const banner = `
   ${name} v${version}
   Copyright (c) ${author.replace(/ *<[^)]*> */g, " ")} and project contributors.
-
+  build date: ${now()}
   This source code is licensed under the ${license} license found in the
   LICENSE file in the root directory of this source tree.
 `;
