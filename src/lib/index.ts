@@ -33,7 +33,7 @@ class PamTracker {
 
       return [response];
     } else if (jobs.length > 1) {
-      const events: Record<string, any>[] = [];
+      let events: Record<string, any>[] = [];
 
       for (const i in jobs) {
         const job = jobs[i];
@@ -44,6 +44,8 @@ class PamTracker {
         );
         events.push(jsonPayload);
       }
+
+      events = this.bringAllowConsentToTheFirstOrder(events);
 
       let useSameContact = true;
       if (events.length > 0 && events[0]._contact_id) {
@@ -130,6 +132,16 @@ class PamTracker {
     // Hook StartUp
     this.hook.dispatchOnStartup(config);
     this.ready = true;
+  }
+
+  bringAllowConsentToTheFirstOrder(
+    events: Record<string, any>[]
+  ): Record<string, any>[] {
+    const allowConsentObjects = events.filter(
+      (obj: any) => obj.event === "allow_consent"
+    );
+    events = events.filter((obj: any) => obj.event !== "allow_consent");
+    return [...allowConsentObjects, ...events];
   }
 
   buildEventPayload(job: RequestJob<ITrackerResponse>) {
