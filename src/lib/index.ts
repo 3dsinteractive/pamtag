@@ -58,6 +58,9 @@ class PamTracker {
         const r = response.results[i];
         const e = events[i];
         let evt = "";
+        if (!e) {
+          continue;
+        }
 
         if (e.hasOwnProperty("event")) {
           evt = e.event;
