@@ -15,22 +15,15 @@ interface UtmParams {
 }
 
 export class UTMPlugin extends Plugin {
-  private minutesToDays(minutes: number): number {
-    const minutesInDay = 1440; // 24 hours x 60 minutes
-    const days = minutes / minutesInDay;
-    return days;
-  }
-
   private extractUtmParams(url: string): UtmParams {
-    const utmParams: UtmParams = {};
-    const urlParams = new URLSearchParams(url);
-
-    utmParams.source = urlParams.get("utm_source");
-    utmParams.medium = urlParams.get("utm_medium");
-    utmParams.campaign = urlParams.get("utm_campaign");
-    utmParams.term = urlParams.get("utm_term");
-    utmParams.content = urlParams.get("utm_content");
-
+    const urlObject = new URL(url);
+    const utmParams = {
+      source: urlObject.searchParams.get("utm_source"),
+      medium: urlObject.searchParams.get("utm_medium"),
+      campaign: urlObject.searchParams.get("utm_campaign"),
+      term: urlObject.searchParams.get("utm_term"),
+      content: urlObject.searchParams.get("utm_content"),
+    };
     return utmParams;
   }
 
@@ -47,49 +40,91 @@ export class UTMPlugin extends Plugin {
   }
 
   private saveUTMToCookie(pam: PamTracker) {
-    const utm = this.extractUtmParams(window.location.href);
+    const utm = this.extractUtmParams(pam.utils.getPageURL());
 
-    const cookieExpireInDay = this.minutesToDays(
-      pam.config.sessionExpireTimeMinutes
-    );
+    // Default is 1 hours
+    const cookieExpireHours = pam.config.sessionExpireTimeMinutes / 60;
 
     if (utm.source) {
-      pam.utils.setCookie("utm_source", utm.source, cookieExpireInDay);
+      pam.utils.setCookie("utm_source", utm.source, cookieExpireHours);
     }
     if (utm.medium) {
-      pam.utils.setCookie("utm_medium", utm.medium, cookieExpireInDay);
+      pam.utils.setCookie("utm_medium", utm.medium, cookieExpireHours);
     }
     if (utm.campaign) {
-      pam.utils.setCookie("utm_campaign", utm.campaign, cookieExpireInDay);
+      pam.utils.setCookie("utm_campaign", utm.campaign, cookieExpireHours);
     }
     if (utm.term) {
-      pam.utils.setCookie("utm_term", utm.term, cookieExpireInDay);
+      pam.utils.setCookie("utm_term", utm.term, cookieExpireHours);
     }
     if (utm.content) {
-      pam.utils.setCookie("utm_content", utm.content, cookieExpireInDay);
+      pam.utils.setCookie("utm_content", utm.content, cookieExpireHours);
     }
   }
 
+  private margeUTM(highPriority: any, lowPriority: any): UtmParams {
+    const merged = { ...highPriority };
+
+    for (const key in lowPriority) {
+      if (lowPriority.hasOwnProperty(key)) {
+        const highPriorityValue = highPriority[key];
+        const lowPriorityValue = lowPriority[key];
+
+        if (
+          highPriorityValue === null ||
+          highPriorityValue === undefined ||
+          highPriorityValue === lowPriorityValue
+        ) {
+          merged[key] = lowPriorityValue;
+        }
+      }
+    }
+
+    return merged;
+  }
+
   override initPlugin(pam: PamTracker): void {
+    this.saveUTMToCookie(pam);
+
     pam.hook.onPreTracking("*", (p) => {
       this.saveUTMToCookie(pam);
 
-      const utm = this.readUTMFromCookie(pam);
-      if (utm.source) {
-        p.form_fields.utm_source = utm.source;
-      }
-      if (utm.medium) {
-        p.form_fields.utm_medium = utm.medium;
-      }
-      if (utm.campaign) {
-        p.form_fields.utm_campaign = utm.campaign;
-      }
-      if (utm.term) {
-        p.form_fields.utm_term = utm.term;
-      }
-      if (utm.content) {
-        p.form_fields.utm_content = utm.content;
-      }
+      try {
+        let url = new URL(p.page_url);
+
+        const utmInCookie = this.readUTMFromCookie(pam);
+        const utmInURL = this.extractUtmParams(pam.utils.getPageURL());
+
+        // Merge UTM from cookie and URL but UTM from URL is higher priority
+        const utm = this.margeUTM(utmInURL, utmInCookie);
+
+        if (utm.source) {
+          url.searchParams.set("utm_source", utm.source);
+          p.form_fields.utm_source = utm.source;
+        }
+
+        if (utm.medium) {
+          url.searchParams.set("utm_medium", utm.medium);
+          p.form_fields.utm_medium = utm.medium;
+        }
+        if (utm.campaign) {
+          url.searchParams.set("utm_campaign", utm.campaign);
+          p.form_fields.utm_campaign = utm.campaign;
+        }
+
+        if (utm.term) {
+          url.searchParams.set("utm_term", utm.term);
+          p.form_fields.utm_term = utm.term;
+        }
+
+        if (utm.content) {
+          url.searchParams.set("utm_content", utm.content);
+          p.form_fields.utm_content = utm.content;
+        }
+
+        p.page_url = url.toString();
+      } catch (e: any) {}
+
       return p;
     });
   }

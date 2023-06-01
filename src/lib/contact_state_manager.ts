@@ -1,7 +1,7 @@
 import { PamAPI } from "./api";
 import { Utils } from "./utils";
 export class ContactStateManager {
-  private cookieExpireInDay = 90;
+  private cookieExpireHours = 24 * 90; // Expire 90days
 
   private publicContact: string;
   private loginContact: string;
@@ -43,10 +43,10 @@ export class ContactStateManager {
   setContactId(contactId: string) {
     if (this.loginStatus) {
       this.loginContact = contactId;
-      this.utls.setCookie("loginContact", contactId, this.cookieExpireInDay);
+      this.utls.setCookie("loginContact", contactId, this.cookieExpireHours);
     } else {
       this.publicContact = contactId;
-      this.utls.setCookie("publicContact", contactId, this.cookieExpireInDay);
+      this.utls.setCookie("publicContact", contactId, this.cookieExpireHours);
     }
   }
 
@@ -54,8 +54,8 @@ export class ContactStateManager {
     this.loginId = loginId;
     this.loginStatus = true;
 
-    this.utls.setCookie("loginId", loginId, this.cookieExpireInDay);
-    this.utls.setCookie("loginStatus", "true", this.cookieExpireInDay);
+    this.utls.setCookie("loginId", loginId, this.cookieExpireHours);
+    this.utls.setCookie("loginStatus", "true", this.cookieExpireHours);
   }
 
   logout() {

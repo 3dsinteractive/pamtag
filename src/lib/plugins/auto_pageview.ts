@@ -6,6 +6,10 @@ export class AutoPageView extends Plugin {
   pam: PamTracker;
 
   autoTrackPageview() {
+    //first pageview
+    this.previousUrl = this.pam.utils.getPageURL();
+    this.pam.track("page_view");
+
     var observer = new MutationObserver((mutations) => {
       const url = this.pam.utils.getPageURL();
       if (url !== this.previousUrl) {
