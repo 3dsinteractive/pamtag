@@ -14,5 +14,20 @@ export class FBPixel extends Plugin {
       }
       return p;
     });
+
+    if (pam.config.facebookConsentMode === true) {
+      pam.hook.onPostTracking("*", (payload, result) => {
+        if (result.consent_id) {
+          const allow = payload.form_fields._allow_social_media_cookies == true;
+          FBPixel.updateConsentMode(allow);
+        }
+      });
+    }
+  }
+
+  static updateConsentMode(allow: boolean) {
+    if (typeof window.fbq != "undefined") {
+      window.fbq("consent", allow ? "grant" : "revoke");
+    }
   }
 }

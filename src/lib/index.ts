@@ -94,18 +94,21 @@ class PamTracker {
   }
 
   private createGetPamFunction() {
-    const w = window as any;
-    w.pam = this;
-    w.getPam = function () {
+    window.pam = this;
+    window.getPam = function () {
       return new Promise(function (resolve) {
-        if (w.pam && w.pam.ready) {
-          resolve(w.pam);
+        if (window.pam && window.pam.ready) {
+          resolve(window.pam);
           return;
         }
         var intervalId = setInterval(function () {
-          if (w.pam !== null && typeof w.pam !== "undefined" && w.pam.ready) {
+          if (
+            window.pam !== null &&
+            typeof window.pam !== "undefined" &&
+            window.pam.ready
+          ) {
             clearInterval(intervalId);
-            resolve(w.pam);
+            resolve(window.pam);
           }
         }, 50);
       });

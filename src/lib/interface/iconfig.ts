@@ -11,4 +11,5 @@ export default interface IConfig {
   displayCookieConsentBarOnStartup?: boolean;
   preferLanguage?: string;
   gtmConsentMode?: boolean;
+  facebookConsentMode?: boolean;
 }
