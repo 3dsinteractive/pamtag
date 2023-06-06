@@ -6,8 +6,8 @@ declare global {
   interface Window {
     getPam: () => Promise<PamTracker>;
     pam: PamTracker;
-    fbq: Function;
-    gtag: Function;
+    fbq?: facebook.Pixel.Event;
+    gtag?: Gtag.Gtag;
     dataLayer: any[];
   }
 }

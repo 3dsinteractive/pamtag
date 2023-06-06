@@ -13,10 +13,12 @@ export class GoogleTagManager extends Plugin {
   }
 
   static updateConsentMode(allowAnalytics: boolean, allowAds: boolean) {
-    window.gtag("consent", "update", {
-      ad_storage: allowAds ? "granted" : "denied",
-      analytics_storage: allowAnalytics ? "granted" : "denied",
-    });
+    if (typeof window.gtag != "undefined") {
+      window.gtag("consent", "update", {
+        ad_storage: allowAds ? "granted" : "denied",
+        analytics_storage: allowAnalytics ? "granted" : "denied",
+      });
+    }
   }
 
   static updateConsentModeFromPamConsent(consent: ICustomerConsentStatus) {
