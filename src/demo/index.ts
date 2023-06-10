@@ -31,4 +31,6 @@ btn.addEventListener("click", async (e) => {
   test();
 });
 
-function test() {}
+function test() {
+  pam.openConsentPopup(contact);
+}

@@ -109,6 +109,7 @@
         background-color: #ebebeb;
         border-right: 1px solid #c6c6c6;
         display: flex;
+        flex-grow: 1;
         flex-direction: column;
         cursor: pointer;
         overflow: scroll;
@@ -122,6 +123,7 @@
         flex-grow: 0;
         display: flex;
         align-items: center;
+        border: solid 0.5px #ccc9;
       }
 
       .tab-content {
@@ -136,7 +138,7 @@
         flex-direction: column;
       }
 
-      .consent-body .tab .active {
+      .consent-body .tab .tab-item.active {
         background-color: #fff;
       }
 
@@ -279,6 +281,43 @@
         color: <%= it.BUTTON_TEXT_COLOR %>;
         background-color: <%= it.PRIMARY_COLOR %>;
       }
+
+      @media only screen and (max-width: 768px) {
+        .content{
+          display: none;
+        }
+        .switch-in-tab{
+          display: block !important;
+        }
+        .desc-mobile{
+          display: block !important;
+        }
+      }
+      
+      .switch-in-tab{
+        display: none;
+      }
+     
+      .desc-mobile{
+        display: none;
+        padding-left: 10px;
+        padding-right: 10px;
+        background-color: #dde3ec;
+      }
+      
+      .desc-mobile-text{
+        font-size: 0.8em;
+        margin-bottom: 20px;
+      }
+
+      .desc-mobile-container{
+        display: none;
+      }
+
+      .desc-mobile-container.active{
+        display: flex !important;
+        flex-direction: column;
+      }
     </style>
   </head>
   <body>
@@ -298,14 +337,30 @@
         <div class="consent-body consent-settings">
           <div class="tab">
             <% for(i in it.PERMISSIONS){ %>
-            <div class="tab-item" data-tabnum="<%= i %>">
-             
+            <div class="tab-item" data-tabnum="<%= i %>">  
               <div class="chack-mark active-consent-type-icon tab-icon-<%= i %>">
-
               </div>
-
               <%=it.PERMISSIONS[i].name %>
             </div>
+
+            <div class="desc-mobile">
+              <div class="desc-mobile-container desc-mobile-<%= i %>">
+                <div class="desc-mobile-text"><%= it.PERMISSIONS_DESC[i] %></div>
+                <div class="switch-on-off switch-<%= i %> switch-in-tab">
+                  <label class="switch">
+                    <input
+                      type="checkbox"
+                      class="checkbox-<%= i %>"
+                      data-index="<%= i%>"
+                      checked
+                    />
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            
             <% } %>
           </div>
 

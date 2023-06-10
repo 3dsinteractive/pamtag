@@ -37,6 +37,10 @@ export class ConsentPopup extends ShadowDom {
         ? "Tracking Consent"
         : "Contacting Consent";
 
+    const descriptions = this.consentMessage.permission.map((p) => {
+      return p.fullDescription[this.pam.config.preferLanguage] || "";
+    });
+
     const variables = {
       PRIMARY_COLOR: primaryColor,
       SECONDARY_COLOR: secondaryColor,
@@ -46,6 +50,7 @@ export class ConsentPopup extends ShadowDom {
       BUTTON_TEXT_COLOR: buttonTextColor,
       PERMISSIONS_COUNT: this.consentMessage.permission.length,
       PERMISSIONS: this.consentMessage.permission,
+      PERMISSIONS_DESC: descriptions,
     };
 
     this.popupDom = this.addHtmlTemplate(htmlContent, variables);
@@ -135,21 +140,29 @@ export class ConsentPopup extends ShadowDom {
 
   private initPermissionSwitchEvent(div: HTMLElement) {
     for (let i in this.consentMessage.permission) {
-      const checkBox = div.getElementsByClassName(`checkbox-${i}`)[0];
-
-      checkBox.addEventListener("change", (e: any) => {
-        const index = Number(e.target.dataset.index);
-        this.consentMessage.permission[index].allow = e.target.checked;
-
-        const icon = this.popupDom.getElementsByClassName(
-          `tab-icon-${index}`
-        )[0] as HTMLElement;
-
-        if (e.target.checked) {
-          icon.classList.remove("hide");
-        } else {
-          icon.classList.add("hide");
-        }
+      const switchs = div.querySelectorAll(`.checkbox-${i}`);
+      switchs.forEach((sw) => {
+        sw.addEventListener("change", (e: any) => {
+          const index = Number(e.target.dataset.index);
+          const checked = e.target.checked;
+          this.consentMessage.permission[index].allow = checked;
+          const icon = this.popupDom.getElementsByClassName(
+            `tab-icon-${index}`
+          )[0] as HTMLElement;
+          if (e.target.checked) {
+            icon.classList.remove("hide");
+          } else {
+            icon.classList.add("hide");
+          }
+          // set all switch toggle
+          div
+            .querySelectorAll(`.checkbox-${index}`)
+            .forEach((sw: HTMLInputElement) => {
+              if (checked !== sw.checked) {
+                sw.checked = checked;
+              }
+            });
+        });
       });
     }
   }
@@ -168,6 +181,8 @@ export class ConsentPopup extends ShadowDom {
         div.getElementsByClassName(`fulldesc-${i}`)[0].classList.add("hide");
       }
     }
+
+    div.querySelector(".desc-mobile-0").classList.add("active");
   }
 
   private initTabEvent(div: HTMLElement) {
@@ -194,6 +209,12 @@ export class ConsentPopup extends ShadowDom {
         let index = Number(focusTab.dataset.tabnum);
         focusTabContent = tabContentList[index] as HTMLElement;
         focusTabContent.classList.add("tab-content-active");
+        //-- Show Full Desc in mobile
+        div.querySelectorAll(".desc-mobile-container").forEach((e) => {
+          e.classList.remove("active");
+        });
+
+        div.querySelector(`.desc-mobile-${index}`).classList.add("active");
       });
     }
   }

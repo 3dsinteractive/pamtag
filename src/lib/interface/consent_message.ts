@@ -18,7 +18,7 @@ export class ConsentMessage {
       [TrackingConsentKey.MarketingCookies]: "Marketing Cookies",
       [TrackingConsentKey.SocialMediaCookies]: "SocialMedia Cookies",
       [ContactingConsentKey.ContactEmail]: "Email",
-      [ContactingConsentKey.ContactSMS]: "EME",
+      [ContactingConsentKey.ContactSMS]: "SMS",
       [ContactingConsentKey.ContactLine]: "Line",
       [ContactingConsentKey.ContactFacebookMessenger]: "Facebook Messenger",
       [ContactingConsentKey.ContactPushNotification]: "Push Notification",
