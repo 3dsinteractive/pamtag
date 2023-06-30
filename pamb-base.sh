@@ -13,3 +13,10 @@ function build_pam_tracker() {
     if [[ $? != 0 ]]; then exit $?; fi
     build_and_commit $IMAGE
 }
+
+function build_nano() {
+    local IMAGE=pam.nano.base.trackerjs
+
+    if [[ $? != 0 ]]; then exit $?; fi
+    build_and_commit $IMAGE
+}
