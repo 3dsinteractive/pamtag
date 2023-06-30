@@ -22,7 +22,6 @@ export class HTTPClient {
   }
 
   public async put(endpoint: string, body: any) {
-    console.log("POST", `${this.baseUrl}${endpoint}`);
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "PUT",
       headers: {
@@ -41,7 +40,8 @@ export class HTTPClient {
   public async post(
     endpoint: string,
     body: any,
-    headers: Record<string, string>
+    headers: Record<string, string>,
+    cookieLess: boolean = false
   ) {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "POST",
@@ -49,7 +49,7 @@ export class HTTPClient {
         "Content-Type": "application/json",
         ...headers,
       },
-      credentials: "include",
+      credentials: cookieLess ? "omit" : "include",
       body: JSON.stringify(body),
     });
 

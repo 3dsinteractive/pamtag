@@ -13,12 +13,25 @@ const { version, name, license, repository, author } = getPackageJson(
   "author"
 );
 
+function now() {
+  let currentDate = new Date();
+  let options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    timeZoneName: "short",
+  };
+  let dateTimeString = currentDate.toLocaleString(undefined, options);
+  return dateTimeString;
+}
+
 const banner = `
   ${name} v${version}
-  ${repository.url}
-
   Copyright (c) ${author.replace(/ *<[^)]*> */g, " ")} and project contributors.
-
+  build date: ${now()}
   This source code is licensed under the ${license} license found in the
   LICENSE file in the root directory of this source tree.
 `;
@@ -38,11 +51,15 @@ module.exports = {
     minimize: true,
     minimizer: [
       new TerserPlugin({ extractComments: false }),
-      new CssMinimizerPlugin(),
+      //new CssMinimizerPlugin(),
     ],
   },
   module: {
     rules: [
+      {
+        test: /\.html$/i,
+        loader: "raw-loader",
+      },
       {
         test: /\.(m|j|t)s$/,
         exclude: /(node_modules|bower_components)/,
@@ -53,16 +70,16 @@ module.exports = {
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          MiniCssExtractPlugin.loader,
-          { loader: "css-loader", options: { sourceMap: true } },
+          //MiniCssExtractPlugin.loader,
+          // { loader: "css-loader", options: { sourceMap: true } },
         ],
       },
     ],
   },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: "css/index.css",
-    }),
+    // new MiniCssExtractPlugin({
+    //   filename: "css/index.css",
+    // }),
     new webpack.BannerPlugin(banner),
   ],
   resolve: {

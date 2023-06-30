@@ -1,4 +1,8 @@
+import { PamAPI } from "./api";
+import { Utils } from "./utils";
 export class ContactStateManager {
+  private cookieExpireHours = 24 * 90; // Expire 90days
+
   private publicContact: string;
   private loginContact: string;
   private publicDB: string;
@@ -8,41 +12,58 @@ export class ContactStateManager {
 
   private loginStatus = false;
 
+  utls = new Utils();
+
   constructor(publicDB: string, loginDB: string, loginKey: string) {
     this.publicDB = publicDB;
     this.loginDB = loginDB;
     this.loginKey = loginKey;
   }
 
+  clean() {
+    this.loginStatus = false;
+    this.loginId = "";
+    this.publicContact = "";
+    this.loginContact = "";
+
+    this.utls.deleteCookie("loginStatus");
+    this.utls.deleteCookie("loginId");
+    this.utls.deleteCookie("publicContact");
+    this.utls.deleteCookie("loginContact");
+    this.utls.deleteCookie("contact_id");
+  }
+
   resumeSession() {
-    this.loginStatus = window.localStorage.loginStatus == "true";
-    this.loginId = window.localStorage.loginId ?? "";
-    this.publicContact = window.localStorage.publicContact ?? "";
-    this.loginContact = window.localStorage.loginContact ?? "";
+    this.loginStatus = this.utls.getCookie("loginStatus") == "true";
+    this.loginId = this.utls.getCookie("loginId") ?? "";
+    this.publicContact = this.utls.getCookie("publicContact") ?? "";
+    this.loginContact = this.utls.getCookie("loginContact") ?? "";
   }
 
   setContactId(contactId: string) {
     if (this.loginStatus) {
       this.loginContact = contactId;
-      window.localStorage.loginContact = contactId;
+      this.utls.setCookie("loginContact", contactId, this.cookieExpireHours);
     } else {
       this.publicContact = contactId;
-      window.localStorage.publicContact = contactId;
+      this.utls.setCookie("publicContact", contactId, this.cookieExpireHours);
     }
   }
 
   login(loginId: string) {
     this.loginId = loginId;
     this.loginStatus = true;
-    window.localStorage.loginId = loginId;
-    window.localStorage.loginStatus = "true";
+
+    this.utls.setCookie("loginId", loginId, this.cookieExpireHours);
+    this.utls.setCookie("loginStatus", "true", this.cookieExpireHours);
   }
 
   logout() {
     this.loginId = "";
     this.loginStatus = false;
-    window.localStorage.loginId = "";
-    window.localStorage.loginStatus = "false";
+
+    this.utls.deleteCookie("loginId");
+    this.utls.deleteCookie("loginStatus");
   }
 
   getLoginKey() {

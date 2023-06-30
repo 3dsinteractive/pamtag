@@ -8,6 +8,22 @@ export class ConsentMessage {
   data: IConsentMessage;
   type: ConsentType;
 
+  private nameTable: Record<TrackingConsentKey | ContactingConsentKey, string> =
+    {
+      _allow_terms_and_conditions: "Terms & Conditions",
+      _allow_privacy_overview: "Privacy Overview",
+      [TrackingConsentKey.NecessaryCookies]: "Necessary Cookies",
+      [TrackingConsentKey.PreferencesCookies]: "Preferences Cookies",
+      [TrackingConsentKey.AnalyticsCookies]: "Analytics Cookies",
+      [TrackingConsentKey.MarketingCookies]: "Marketing Cookies",
+      [TrackingConsentKey.SocialMediaCookies]: "SocialMedia Cookies",
+      [ContactingConsentKey.ContactEmail]: "Email",
+      [ContactingConsentKey.ContactSMS]: "SMS",
+      [ContactingConsentKey.ContactLine]: "Line",
+      [ContactingConsentKey.ContactFacebookMessenger]: "Facebook Messenger",
+      [ContactingConsentKey.ContactPushNotification]: "Push Notification",
+    };
+
   permission: IConsentPermission[] = [];
 
   constructor(data: IConsentMessage) {
@@ -81,63 +97,85 @@ export class ConsentMessage {
     return formField;
   }
 
+  private wrapToConsentPermission(
+    key: TrackingConsentKey | ContactingConsentKey,
+    allow: boolean,
+    permission: IConsentDetailByType
+  ): IConsentPermission {
+    return {
+      key: key,
+      allow: allow,
+      name: this.nameTable[key],
+      briefDescription: permission.brief_description,
+      fullDescription: permission.full_description,
+      isFullDescriptionEnabled: permission.is_full_description_enabled,
+    };
+  }
+
   private extractTrackingConsent() {
     const data = this.data;
     this.permission = [];
 
     if (data.setting.terms_and_conditions.is_enabled === true) {
-      const c = {
-        key: TrackingConsentKey.TermsAndConditions,
-        allow: true,
-      };
+      const c = this.wrapToConsentPermission(
+        TrackingConsentKey.TermsAndConditions,
+        true,
+        data.setting.terms_and_conditions
+      );
       this.permission.push(c);
     }
 
     if (data.setting.privacy_overview.is_enabled === true) {
-      const c = {
-        key: TrackingConsentKey.PrivacyOverview,
-        allow: true,
-      };
+      const c = this.wrapToConsentPermission(
+        TrackingConsentKey.PrivacyOverview,
+        true,
+        data.setting.privacy_overview
+      );
       this.permission.push(c);
     }
 
     if (data.setting.necessary_cookies.is_enabled === true) {
-      const c = {
-        key: TrackingConsentKey.NecessaryCookies,
-        allow: true,
-      };
+      const c = this.wrapToConsentPermission(
+        TrackingConsentKey.NecessaryCookies,
+        true,
+        data.setting.necessary_cookies
+      );
       this.permission.push(c);
     }
 
     if (data.setting.preferences_cookies.is_enabled === true) {
-      const c = {
-        key: TrackingConsentKey.PreferencesCookies,
-        allow: false,
-      };
+      const c = this.wrapToConsentPermission(
+        TrackingConsentKey.PreferencesCookies,
+        true,
+        data.setting.preferences_cookies
+      );
       this.permission.push(c);
     }
 
     if (data.setting.analytics_cookies.is_enabled === true) {
-      const c = {
-        key: TrackingConsentKey.AnalyticsCookies,
-        allow: false,
-      };
+      const c = this.wrapToConsentPermission(
+        TrackingConsentKey.AnalyticsCookies,
+        true,
+        data.setting.analytics_cookies
+      );
       this.permission.push(c);
     }
 
     if (data.setting.marketing_cookies.is_enabled === true) {
-      const c = {
-        key: TrackingConsentKey.MarketingCookies,
-        allow: false,
-      };
+      const c = this.wrapToConsentPermission(
+        TrackingConsentKey.MarketingCookies,
+        true,
+        data.setting.marketing_cookies
+      );
       this.permission.push(c);
     }
 
     if (data.setting.social_media_cookies.is_enabled === true) {
-      const c = {
-        key: TrackingConsentKey.SocialMediaCookies,
-        allow: false,
-      };
+      const c = this.wrapToConsentPermission(
+        TrackingConsentKey.SocialMediaCookies,
+        true,
+        data.setting.social_media_cookies
+      );
       this.permission.push(c);
     }
   }
@@ -147,58 +185,65 @@ export class ConsentMessage {
     this.permission = [];
 
     if (data.setting.terms_and_conditions.is_enabled === true) {
-      const c = {
-        key: ContactingConsentKey.TermsAndConditions,
-        allow: true,
-      };
+      const c = this.wrapToConsentPermission(
+        ContactingConsentKey.TermsAndConditions,
+        true,
+        data.setting.terms_and_conditions
+      );
       this.permission.push(c);
     }
 
     if (data.setting.privacy_overview.is_enabled === true) {
-      const c = {
-        key: ContactingConsentKey.PrivacyOverview,
-        allow: true,
-      };
+      const c = this.wrapToConsentPermission(
+        ContactingConsentKey.PrivacyOverview,
+        true,
+        data.setting.privacy_overview
+      );
       this.permission.push(c);
     }
 
     if (data.setting.email.is_enabled === true) {
-      const c = {
-        key: ContactingConsentKey.ContactEmail,
-        allow: false,
-      };
+      const c = this.wrapToConsentPermission(
+        ContactingConsentKey.ContactEmail,
+        true,
+        data.setting.email
+      );
       this.permission.push(c);
     }
 
     if (data.setting.sms.is_enabled === true) {
-      const c = {
-        key: ContactingConsentKey.ContactSMS,
-        allow: false,
-      };
+      const c = this.wrapToConsentPermission(
+        ContactingConsentKey.ContactSMS,
+        true,
+        data.setting.sms
+      );
       this.permission.push(c);
     }
 
     if (data.setting.line.is_enabled === true) {
-      const c = {
-        key: ContactingConsentKey.ContactLine,
-        allow: false,
-      };
+      const c = this.wrapToConsentPermission(
+        ContactingConsentKey.ContactLine,
+        true,
+        data.setting.line
+      );
       this.permission.push(c);
     }
 
     if (data.setting.facebook_messenger.is_enabled === true) {
-      const c = {
-        key: ContactingConsentKey.ContactFacebookMessenger,
-        allow: false,
-      };
+      const c = this.wrapToConsentPermission(
+        ContactingConsentKey.ContactFacebookMessenger,
+        true,
+        data.setting.facebook_messenger
+      );
       this.permission.push(c);
     }
 
     if (data.setting.push_notification.is_enabled === true) {
-      const c = {
-        key: ContactingConsentKey.ContactPushNotification,
-        allow: false,
-      };
+      const c = this.wrapToConsentPermission(
+        ContactingConsentKey.ContactPushNotification,
+        true,
+        data.setting.push_notification
+      );
       this.permission.push(c);
     }
   }
@@ -207,6 +252,10 @@ export class ConsentMessage {
 export interface IConsentPermission {
   key: TrackingConsentKey | ContactingConsentKey;
   allow: boolean;
+  name: string;
+  briefDescription: IDataByLanguage;
+  fullDescription: IDataByLanguage;
+  isFullDescriptionEnabled: boolean;
 }
 
 export interface IConsentMessage {

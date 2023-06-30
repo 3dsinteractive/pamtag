@@ -17,4 +17,6 @@ RUN \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=0 /home/node/app/build/pamtracker.js /usr/share/nginx/html/script
+COPY --from=0 /home/node/app/build/pamtracker.js /usr/share/nginx/html/script/
+COPY --from=0 /home/node/app/pam4/pam4-tracker.umd.js /usr/share/nginx/html/script/
+COPY --from=0 /home/node/app/pam4/pam4-tracker.umd.js.map /usr/share/nginx/html/script/

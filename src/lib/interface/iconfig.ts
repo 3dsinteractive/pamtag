@@ -5,5 +5,11 @@ export default interface IConfig {
   contactingConsentMessageIds?: string[];
   publicDBAlias: string;
   loginDBAlias: string;
-  loginKey: string;
+  loginKey?: string;
+  autoTrackPageview?: boolean;
+  sessionExpireTimeMinutes?: number; // default 60 min
+  displayCookieConsentBarOnStartup?: boolean;
+  preferLanguage?: string;
+  gtmConsentMode?: boolean;
+  facebookConsentMode?: boolean;
 }

@@ -1,11 +1,9 @@
-import { JobType } from "./enums/enums";
-
 export type RequestJob<T> = {
-  jobType?: JobType;
   event: string;
   trackingConsentMessageId: string;
   data?: Record<string, any>;
   flushEventBefore: boolean;
+  cookieLess?: boolean;
   resolve?: (value: T | PromiseLike<T>) => void;
   reject?: (reason?: any) => void;
 };
@@ -15,6 +13,7 @@ export class QueueManager<T> {
   private running = false;
   private waitingForBulk = false;
   private bulkTimeout;
+  private isBucketOpen = false;
 
   public callback: (job: RequestJob<T>[]) => Promise<T[]>;
 
@@ -26,11 +25,24 @@ export class QueueManager<T> {
     this.callback = callback;
   }
 
+  openBucket() {
+    this.isBucketOpen = true;
+    this.runQueue();
+  }
+
+  closeBucket() {
+    this.isBucketOpen = false;
+    this.runQueue();
+  }
+
   enqueueJob(job: RequestJob<T>): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       job.reject = reject;
       job.resolve = resolve;
       this.jobs.push(job);
+      if (this.isBucketOpen) {
+        return;
+      }
       if (!this.running && !this.waitingForBulk) {
         this.waitingForBulk = true;
 
@@ -47,9 +59,17 @@ export class QueueManager<T> {
     while (this.jobs.length > 0) {
       const jobs: RequestJob<T>[] = [];
 
-      while (this.jobs.length > 0 && !this.jobs[0].flushEventBefore) {
-        const job = this.jobs.shift();
-        jobs.push(job);
+      while (this.jobs.length > 0) {
+        if (
+          this.jobs[0].cookieLess &&
+          this.jobs[0].flushEventBefore &&
+          jobs.length > 0
+        ) {
+          break;
+        } else {
+          const job = this.jobs.shift();
+          jobs.push(job);
+        }
       }
 
       try {

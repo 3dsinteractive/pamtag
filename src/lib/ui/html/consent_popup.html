@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+
+    <style>
+      .shadow-bg {
+        background-color: #0006;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+      .popup-body {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-height: 600px;
+        max-width: 800px;
+        width: 80%;
+        height: 80%;
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        font-family: Sukhumvit, Helvetica;
+      }
+
+      .top-bar {
+        color: <%= it.PRIMARY_COLOR %>;
+
+        display: flex;
+        flex-grow: 0;
+      }
+      .pop-up-main-icon {
+        height: 40px;
+      }
+      .top-bar .title {
+        font-weight: bold;
+        font-size: 1.5em;
+        margin: 0;
+        text-transform: uppercase;
+      }
+
+      .x-icon {
+        margin-left: auto;
+        margin-bottom: 5px;
+        position: relative;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 1;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .x-icon::before {
+        color: <%= it.PRIMARY_COLOR %>;
+        content: "\2715";
+      }
+
+      .consent-type-title {
+        margin: 0 0 0 20px;
+        color: <%= it.TEXT_COLOR %>;
+      }
+      .consent-body {
+        border: solid 1px #c6c6c6;
+        border-radius: 10px;
+        flex-grow: 1;
+        display: flex;
+        overflow: auto;
+      }
+      .action-bar {
+        display: flex;
+        margin-top: 10px;
+      }
+      .accept-all-btn {
+        cursor: pointer;
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        height: 40px;
+        width: 150px;
+        color: <%= it.BUTTON_TEXT_COLOR %>;
+        background-color: <%= it.PRIMARY_COLOR %>;
+      }
+      .save-btn {
+        cursor: pointer;
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        height: 40px;
+        width: 150px;
+        margin-left: auto;
+        margin-right: 20px;
+        color: <%= it.BUTTON_TEXT_COLOR %>;
+        background-color: <%= it.SECONDARY_COLOR %>;
+      }
+
+      .consent-body .tab {
+        width: 230px;
+        background-color: #ebebeb;
+        border-right: 1px solid #c6c6c6;
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+        cursor: pointer;
+        overflow: scroll;
+        overflow-x: hidden;
+      }
+
+      .consent-body .tab .tab-item {
+        width: 100%;
+        height: 40px;
+        padding: 10px;
+        flex-grow: 0;
+        display: flex;
+        align-items: center;
+        border: solid 0.5px #ccc9;
+      }
+
+      .tab-content {
+        display: none;
+        flex-grow: 1;
+        overflow: scroll;
+        padding: 10px;
+      }
+
+      .tab-content-active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .consent-body .tab .tab-item.active {
+        background-color: #fff;
+      }
+
+      .content {
+        display: flex;
+        flex-grow: 1;
+      }
+      .active-consent-type-icon {
+        width: 20px;
+        height: 20px;
+        color: #71D879;
+      }
+
+      .tab-content .content-title {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        flex-grow: 0;
+      }
+      .tab-content .content-desc {
+        font-size: 1rem;
+        flex-grow: 1;
+      }
+      .tab-content .content-action {
+        flex-grow: 0;
+        display: flex;
+        flex-direction: row;
+      }
+
+      .full-version-button {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .switch-on-off {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+      }
+    </style>
+
+    <style>
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        transform: scale(0.6);
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+      }
+
+      input:checked + .slider {
+        background-color: #71D879;
+      }
+
+      input:focus + .slider {
+        box-shadow: 0 0 1px #71D879;
+      }
+
+      input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+      }
+
+      /* Rounded sliders */
+      .slider.round {
+        border-radius: 34px;
+      }
+
+      .slider.round:before {
+        border-radius: 50%;
+      }
+      .switch-0{
+        visibility: hidden;
+      }
+      .switch-1{
+        visibility: hidden;
+      }
+      .hide {
+        visibility: hidden;
+      }
+      .gone{
+        display: none !important;
+      }
+      .back-icon{
+        margin-right: 10px;
+      }
+      .back-icon:before{
+        content: "\276E";
+      }
+      
+      .chack-mark:after{
+        content: "\2714"
+      }
+      .consent-full-desc{
+        display: flex;
+        padding: 10px;
+        overflow: scroll;
+      }
+
+      .back-btn{
+        cursor: pointer;
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        height: 40px;
+        width: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1em;;
+        color: <%= it.BUTTON_TEXT_COLOR %>;
+        background-color: <%= it.PRIMARY_COLOR %>;
+      }
+
+      @media only screen and (max-width: 768px) {
+        .content{
+          display: none;
+        }
+        .switch-in-tab{
+          display: block !important;
+        }
+        .desc-mobile{
+          display: block !important;
+        }
+      }
+      
+      .switch-in-tab{
+        display: none;
+      }
+     
+      .desc-mobile{
+        display: none;
+        padding-left: 10px;
+        padding-right: 10px;
+        background-color: #dde3ec;
+      }
+      
+      .desc-mobile-text{
+        font-size: 0.8em;
+        margin-bottom: 20px;
+      }
+
+      .desc-mobile-container{
+        display: none;
+      }
+
+      .desc-mobile-container.active{
+        display: flex !important;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shadow-bg">
+      <div class="popup-body">
+        <div class="top-bar">
+          <svg class="pop-up-main-icon" viewBox="0 0 30 30">
+            <path
+              fill="currentColor"
+              d="M21,11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1L21,5V11M12,21C15.75,20 19,15.54 19,11.22V6.3L12,3.18V21Z"
+            />
+          </svg>
+          <h2 class="title"><%= it.POPUP_MAIN_ICON %></h2>
+          <h2 class="consent-type-title"><%= it.CONSENT_TYPE %></h2>
+          <div class="x-icon"></div>
+        </div>
+        <div class="consent-body consent-settings">
+          <div class="tab">
+            <% for(i in it.PERMISSIONS){ %>
+            <div class="tab-item" data-tabnum="<%= i %>">  
+              <div class="chack-mark active-consent-type-icon tab-icon-<%= i %>">
+              </div>
+              <%=it.PERMISSIONS[i].name %>
+            </div>
+
+            <div class="desc-mobile">
+              <div class="desc-mobile-container desc-mobile-<%= i %>">
+                <div class="desc-mobile-text"><%= it.PERMISSIONS_DESC[i] %></div>
+                <div class="switch-on-off switch-<%= i %> switch-in-tab">
+                  <label class="switch">
+                    <input
+                      type="checkbox"
+                      class="checkbox-<%= i %>"
+                      data-index="<%= i%>"
+                      checked
+                    />
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            
+            <% } %>
+          </div>
+
+          <div class="content">
+            <% var tabNum = 0;%> 
+            <% for(i=0; i<it.PERMISSIONS_COUNT; i++){ %>
+            <div class="tab-content" data-tabnum="<%= i %>">
+              <div  class="content-title title-<%= i %>"></div>
+              <div  class="content-desc desc-<%= i %>"></div>
+              <div class="content-action">
+                <div class="full-version-button fulldesc-<%= i %>" data-index="<%= i %>">Full Version</div>
+                <div class="switch-on-off switch-<%= i %>">
+                  <label class="switch">
+                    <input
+                      type="checkbox"
+                      class="checkbox-<%= i %>"
+                      data-index="<%= i%>"
+                      checked
+                    />
+                    <span class="slider round"></span>
+                  </label>
+                  Accept
+                </div>
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+        <div class="action-bar consent-settings-action-bar">
+          <button class="save-btn">Save Setting</button>
+          <button class="accept-all-btn">Accept All</button>
+        </div>
+
+        <div class="consent-body gone consent-full-desc">
+            <div class="consent-full-desc-body"></div>
+        </div>
+        <div class="action-bar consent-full-desc-action-bar gone">
+            <button class="back-btn"><div class="back-icon"></div>Back</button>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>
