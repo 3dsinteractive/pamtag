@@ -13,3 +13,12 @@ function build_pam_tracker() {
     if [[ $? != 0 ]]; then exit $?; fi
     build_and_commit $IMAGE
 }
+
+function build_nano() {
+    local IMAGE=pam.nano.base.trackerjs
+
+    if [[ $? != 0 ]]; then exit $?; fi
+    docker login -u $DOCKER_USER -p $DOCKER_PASS
+    docker build -f ./Dockerfile -t 3dsinteractive/$IMAGE:$APP_VERSION .
+    docker push 3dsinteractive/$IMAGE:$APP_VERSION
+}
