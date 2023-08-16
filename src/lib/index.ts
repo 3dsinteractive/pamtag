@@ -155,7 +155,9 @@ class PamTracker {
     payload.event = job.event;
 
     let form_fields = { ...job.data };
-    form_fields._consent_message_id = job.trackingConsentMessageId;
+    if (!job.data._consent_message_id) {
+      form_fields._consent_message_id = job.trackingConsentMessageId;
+    }
 
     if (job.cookieLess === true) {
       form_fields._cookie_less = true;
