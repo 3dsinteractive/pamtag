@@ -35,4 +35,4 @@ function test() {
   pam.openConsentPopup(contact);
 }
 
-console.log(pam.hashGenerator.sha256("5679900017337"));
+console.log(pam.hashGenerator.sha256("12345"));
