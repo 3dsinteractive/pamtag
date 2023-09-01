@@ -34,3 +34,5 @@ btn.addEventListener("click", async (e) => {
 function test() {
   pam.openConsentPopup(contact);
 }
+
+console.log(pam.hashGenerator.sha256("5679900017337"));

@@ -9,7 +9,7 @@ import { PluginRegistration } from "./plugins/index";
 import { ContactStateManager } from "./contact_state_manager";
 import { ConsentPopup } from "./ui/consent_popup";
 import { PopupConsentResult } from "./interface/popup_consent_result";
-
+import { HashGenerator } from "./crypto/HashGenerator";
 class PamTracker {
   config: IConfig;
   api: PamAPI;
@@ -17,6 +17,8 @@ class PamTracker {
   hook = new Hook();
   utils = new Utils();
   ready = false;
+
+  hashGenerator = new HashGenerator();
 
   queueManager = new QueueManager<ITrackerResponse>(50, async (jobs) => {
     if (jobs.length == 1) {
