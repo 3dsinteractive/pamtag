@@ -4,6 +4,7 @@ export type RequestJob<T> = {
   data?: Record<string, any>;
   flushEventBefore: boolean;
   cookieLess?: boolean;
+  bucketID?: number;
   resolve?: (value: T | PromiseLike<T>) => void;
   reject?: (reason?: any) => void;
 };
@@ -14,6 +15,7 @@ export class QueueManager<T> {
   private waitingForBulk = false;
   private bulkTimeout;
   private isBucketOpen = false;
+  private currentBucketID = 0;
 
   public callback: (job: RequestJob<T>[]) => Promise<T[]>;
 
@@ -26,6 +28,7 @@ export class QueueManager<T> {
   }
 
   openBucket() {
+    this.currentBucketID++;
     this.isBucketOpen = true;
     this.runQueue();
   }
@@ -39,6 +42,11 @@ export class QueueManager<T> {
     return new Promise<T>((resolve, reject) => {
       job.reject = reject;
       job.resolve = resolve;
+      if (this.isBucketOpen) {
+        job.bucketID = this.currentBucketID;
+      } else {
+        job.bucketID = -1;
+      }
       this.jobs.push(job);
       if (this.isBucketOpen) {
         return;
@@ -59,22 +67,29 @@ export class QueueManager<T> {
     while (this.jobs.length > 0) {
       const jobs: RequestJob<T>[] = [];
 
+      let bucketID = -1;
+
       while (this.jobs.length > 0) {
-        if (
-          this.jobs[0].cookieLess &&
-          this.jobs[0].flushEventBefore &&
-          jobs.length > 0
-        ) {
-          break;
-        } else {
+        if (jobs.length == 0) {
+          bucketID = this.jobs[0].bucketID;
           const job = this.jobs.shift();
           jobs.push(job);
+        } else {
+          if (
+            this.jobs[0].cookieLess ||
+            this.jobs[0].flushEventBefore ||
+            this.jobs[0].bucketID != bucketID
+          ) {
+            break;
+          } else {
+            const job = this.jobs.shift();
+            jobs.push(job);
+          }
         }
       }
 
       try {
         const result = await this.callback(jobs);
-
         for (const i in result) {
           const r = result[i];
           jobs[i].resolve(r);

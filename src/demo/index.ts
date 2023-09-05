@@ -32,7 +32,18 @@ btn.addEventListener("click", async (e) => {
 });
 
 function test() {
-  pam.openConsentPopup(contact);
+  //pam.openConsentPopup(contact);
+  for (var i = 0; i <= 3; i++) {
+    pam.track(`event_${i}`, { round: i }, true);
+  }
+  for (var i = 0; i <= 3; i++) {
+    pam.track(`event_${i}`, { round: i });
+  }
+  pam.eventBucket(() => {
+    pam.track(`a`, { round: i });
+    pam.track(`b`, { round: i });
+    pam.track(`c`, { round: i });
+  });
 }
 
-console.log(pam.hashGenerator.sha256("12345"));
+//console.log(pam.hashGenerator.sha256("12345"));
