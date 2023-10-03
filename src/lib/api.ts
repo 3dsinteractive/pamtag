@@ -53,13 +53,17 @@ export class PamAPI {
     }
     delete data.form_fields._cookie_less;
 
-    const response = await this.http.post(
-      "/trackers/events",
-      data,
-      headers,
-      cookieLess
-    );
-    return response;
+    try {
+      const response = await this.http.post(
+        "/trackers/events",
+        data,
+        headers,
+        cookieLess
+      );
+      return response;
+    } catch (e) {}
+
+    return {};
   }
 
   async postTrackers(
@@ -90,13 +94,17 @@ export class PamAPI {
       events: events,
     };
 
-    const response: IBulkTrackerResponse = await this.http.post(
-      "/trackers/events",
-      payload,
-      headers,
-      cookieLess
-    );
-    return response;
+    try {
+      const response: IBulkTrackerResponse = await this.http.post(
+        "/trackers/events",
+        payload,
+        headers,
+        cookieLess
+      );
+      return response;
+    } catch (e) {}
+
+    return { results: [] };
   }
 
   async loadConsentStatus(
