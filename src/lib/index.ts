@@ -30,10 +30,13 @@ class PamTracker {
       jsonPayload = await this.hook.dispatchPreTracking(job.event, jsonPayload);
 
       const response = await this.api.postTracker(jsonPayload);
-      // Hook Post Event
-      this.hook.dispatchPostTracking(job.event, jsonPayload, response);
+      if (response) {
+        // Hook Post Event
+        this.hook.dispatchPostTracking(job.event, jsonPayload, response);
+        return [response];
+      }
 
-      return [response];
+      return [];
     } else if (jobs.length > 1) {
       let events: Record<string, any>[] = [];
 

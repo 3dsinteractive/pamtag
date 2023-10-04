@@ -45,7 +45,7 @@ export class PamAPI {
   async postTracker(
     data: Record<string, any>,
     headers: Record<string, any> = {}
-  ): Promise<ITrackerResponse> {
+  ): Promise<ITrackerResponse | null> {
     let cookieLess = false;
     if (data.form_fields._cookie_less === true) {
       cookieLess = true;
@@ -63,7 +63,7 @@ export class PamAPI {
       return response;
     } catch (e) {}
 
-    return {};
+    return null;
   }
 
   async postTrackers(
