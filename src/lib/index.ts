@@ -348,3 +348,4 @@ class PamTracker {
 }
 
 export default PamTracker;
+
