@@ -10,6 +10,7 @@ import { ContactStateManager } from "./contact_state_manager";
 import { ConsentPopup } from "./ui/consent_popup";
 import { PopupConsentResult } from "./interface/popup_consent_result";
 import { HashGenerator } from "./crypto/HashGenerator";
+import { LoginOptions } from "./options/LoginOptions";
 class PamTracker {
   config: IConfig;
   api: PamAPI;
@@ -175,10 +176,18 @@ class PamTracker {
     return payload;
   }
 
-  async userLogin(loginId: string) {
+  async userLogin(loginId: string, options: LoginOptions = {}) {
     const loginKey = this.config.loginKey;
     const data: Record<string, any> = {};
-    data[loginKey] = loginId;
+
+    if (options.alternate_key) {
+      data["_key_name"] = options.alternate_key;
+      data["_key_value"] = loginId;
+      data[options.alternate_key] = loginId;
+      data["_force_create"] = false;
+    } else {
+      data[loginKey] = loginId;
+    }
 
     let job: RequestJob<ITrackerResponse> = {
       event: "login",
@@ -348,4 +357,3 @@ class PamTracker {
 }
 
 export default PamTracker;
-
