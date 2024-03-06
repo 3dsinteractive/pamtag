@@ -1,8 +1,8 @@
 {
   "name": "@pam/tag",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "PAM Tracker script",
-  "main": "build/PamTracker.js",
+  "main": "build/pamtracker.js",
   "types": "build/types/index.d.ts",
   "scripts": {
     "start": "webpack serve --config webpack.config.demo.js",
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/3dsinteractive/PamTracker.js"
+    "url": "https://github.com/3dsinteractive/pamtag"
   },
   "author": "PAM <contact@3dsinteractive.com> (https://github.com/3dsinteractive)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/3dsinteractive/PamTracker.js/issues"
+    "url": "https://github.com/3dsinteractive/pamtag/issues"
   },
-  "homepage": "https://github.com/3dsinteractive/PamTracker.js",
+  "homepage": "https://github.com/3dsinteractive/pamtag",
   "keywords": [
     "library",
     "starter",

@@ -24,6 +24,9 @@ case $user_choice in
     ;;
 esac
 
+yarn build
+npm pack
+
 
 
 
