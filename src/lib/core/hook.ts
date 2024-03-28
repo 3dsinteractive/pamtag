@@ -54,6 +54,9 @@ export class Hook {
       const e = this.preEventListener[i];
       if (this.isMatchEvent(event, e.event)) {
         const r = await e.callback(JSON.parse(JSON.stringify(p)), null);
+        if (r == undefined) {
+          return undefined;
+        }
         if (r) {
           p = r;
         }

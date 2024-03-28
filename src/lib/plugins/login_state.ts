@@ -6,6 +6,12 @@ export class LoginState extends Plugin {
     pam.hook.onPreTracking("*", (p) => {
       const contactId = pam.contactState.getContactId();
       const database = pam.contactState.getDatabase();
+
+      if (!database) {
+        // When database is empty return undefined to cancel the event tracking
+        return undefined;
+      }
+
       if (contactId) {
         p.form_fields._contact_id = contactId;
       }

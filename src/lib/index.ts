@@ -29,7 +29,9 @@ class PamTracker {
 
       // Hook Pre Event
       jsonPayload = await this.hook.dispatchPreTracking(job.event, jsonPayload);
-
+      if (jsonPayload == undefined) {
+        return [];
+      }
       const response = await this.api.postTracker(jsonPayload);
       if (response) {
         // Hook Post Event
@@ -48,7 +50,13 @@ class PamTracker {
           job.event,
           jsonPayload
         );
-        events.push(jsonPayload);
+        if (jsonPayload) {
+          events.push(jsonPayload);
+        }
+      }
+
+      if (events.length == 0) {
+        return [];
       }
 
       events = this.bringAllowConsentToTheFirstOrder(events);
