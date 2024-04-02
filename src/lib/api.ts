@@ -60,6 +60,7 @@ export class PamAPI {
         headers,
         cookieLess
       );
+      response.cancelled = false;
       return response;
     } catch (e) {}
 

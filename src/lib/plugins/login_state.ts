@@ -8,8 +8,9 @@ export class LoginState extends Plugin {
       const database = pam.contactState.getDatabase();
 
       if (!database) {
-        // When database is empty return undefined to cancel the event tracking
-        return undefined;
+        // When database is empty cancel the event tracking
+        p.cancel = true;
+        return p;
       }
 
       if (contactId) {

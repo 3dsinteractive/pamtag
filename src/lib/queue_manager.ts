@@ -90,6 +90,7 @@ export class QueueManager<T> {
 
       try {
         const result = await this.callback(jobs);
+
         for (const i in result) {
           const r = result[i];
           jobs[i].resolve(r);

@@ -29,8 +29,11 @@ class PamTracker {
 
       // Hook Pre Event
       jsonPayload = await this.hook.dispatchPreTracking(job.event, jsonPayload);
-      if (jsonPayload == undefined) {
-        return [];
+      if (jsonPayload && jsonPayload.cancel === true) {
+        this.hook.dispatchPostTracking(job.event, jsonPayload, {
+          cancelled: true,
+        });
+        return [{ cancelled: true }];
       }
       const response = await this.api.postTracker(jsonPayload);
       if (response) {
@@ -50,7 +53,7 @@ class PamTracker {
           job.event,
           jsonPayload
         );
-        if (jsonPayload) {
+        if (jsonPayload && jsonPayload.cancel !== true) {
           events.push(jsonPayload);
         }
       }
@@ -188,6 +191,19 @@ class PamTracker {
     const loginKey = this.config.loginKey;
     const data: Record<string, any> = {};
 
+    // Track Login To Public
+    let job: RequestJob<ITrackerResponse> = {
+      event: "login",
+      trackingConsentMessageId: this.config.trackingConsentMessageId,
+      data: data,
+      flushEventBefore: false,
+    };
+
+    try {
+      await this.queueManager.enqueueJob(job);
+    } catch (e: any) {}
+
+    // Track Login To Login
     if (options.alternate_key) {
       data["_key_name"] = options.alternate_key;
       data["_key_value"] = loginId;
@@ -197,21 +213,16 @@ class PamTracker {
       data[loginKey] = loginId;
     }
 
-    let job: RequestJob<ITrackerResponse> = {
-      event: "login",
-      trackingConsentMessageId: this.config.trackingConsentMessageId,
-      data: data,
-      flushEventBefore: false,
-    };
-    await this.queueManager.enqueueJob(job);
-
     job = {
       event: "login",
       trackingConsentMessageId: this.config.trackingConsentMessageId,
       data: data,
       flushEventBefore: true,
     };
-    await this.queueManager.enqueueJob(job);
+
+    try {
+      await this.queueManager.enqueueJob(job);
+    } catch (e: any) {}
   }
 
   async userLogout() {

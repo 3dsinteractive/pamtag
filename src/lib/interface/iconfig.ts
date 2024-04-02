@@ -1,5 +1,5 @@
 export default interface IConfig {
-  webPushPublicKey: string;
+  webPushPublicKey?: string;
   baseApi: string;
   trackingConsentMessageId: string;
   contactingConsentMessageIds?: string[];
