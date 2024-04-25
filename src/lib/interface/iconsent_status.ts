@@ -25,7 +25,7 @@ export interface ICustomerConsentStatus {
   last_consent_version: number;
   latest_version: string;
   last_consent_at: string;
-  need_consent_review: boolean;
+  need_consent_review?: boolean;
   created_at: string;
   updated_at: string;
 }

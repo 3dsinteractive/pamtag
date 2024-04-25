@@ -8,6 +8,7 @@ export class CookieConsentPlugin extends Plugin {
   private pam: PamTracker;
   private cookieConsentBar?: CookieConsentBatUI;
   private consentPopup?: ConsentPopup;
+  private allowTracking = false;
 
   override initPlugin(pam: PamTracker): void {
     this.pam = pam;
@@ -25,6 +26,24 @@ export class CookieConsentPlugin extends Plugin {
     this.cookieConsentBar.onOpenMoreInfo = (consentMessage) => {
       this.consentPopup.show(consentMessage);
     };
+
+    pam.hook.onPostTracking("allow_consent", async (payload, result) => {
+      await this.checkConsentPermission();
+    });
+
+    pam.hook.onPreTracking("*", (payload) => {
+      if (
+        payload.event != "allow_consent" &&
+        payload.event != "login" &&
+        payload.event != "logout"
+      ) {
+        if (!this.allowTracking) {
+          payload.cancel = true;
+          return payload;
+        }
+      }
+      return payload;
+    });
 
     pam.hook.onStartup(async (config) => {
       GoogleTagManager.initGTM();
@@ -45,18 +64,35 @@ export class CookieConsentPlugin extends Plugin {
     const contactId = this.pam.contactState.getContactId();
 
     if (contactId) {
-      const status = await this.pam.api.loadConsentStatus(
-        contactId,
-        consentMessageId
-      );
+      let status: ICustomerConsentStatus = undefined;
+
+      try {
+        status = await this.pam.api.loadConsentStatus(
+          contactId,
+          consentMessageId
+        );
+      } catch (e) {}
+
+      if (
+        status &&
+        status.tracking_permission &&
+        status.tracking_permission.preferences_cookies === true
+      ) {
+        this.allowTracking = true;
+      } else {
+        this.allowTracking = false;
+      }
+
       if (this.pam.config.displayCookieConsentBarOnStartup === true) {
-        if (status.need_consent_review) {
+        const showConsentBar = status?.need_consent_review ?? true;
+        if (showConsentBar) {
           this.renderConsentBar(consentMessageId);
         } else {
           this.cookieConsentBar.destroy();
           this.consentPopup.destroy();
         }
       }
+
       return status;
     } else {
       if (this.pam.config.displayCookieConsentBarOnStartup === true) {
