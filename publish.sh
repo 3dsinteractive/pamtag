@@ -26,8 +26,7 @@ esac
 
 yarn build
 npm pack
-
-
+npm publish
 
 
 

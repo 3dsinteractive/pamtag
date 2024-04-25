@@ -1,0 +1,16 @@
+NAME=$1
+
+
+rm -rf "src/lib/ui/html"
+
+DEFAULT_HTML_PATH="html-templates/default"
+CUSTOM_HTML_PATH="html-templates/$NAME"
+
+if [ -d "$CUSTOM_HTML_PATH" ]; then
+    cp -r "$CUSTOM_HTML_PATH" "src/lib/ui/html"
+else
+    cp -r "$DEFAULT_HTML_PATH" "src/lib/ui/html"
+fi
+
+
+
