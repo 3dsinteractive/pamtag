@@ -15,6 +15,19 @@ export class ConsentPopup extends ShadowDom {
   onSaveConfig: (consentMessage: ConsentMessage) => Promise<void>;
   onClose: () => Promise<void>;
 
+  getTextFromPreferLang(obj: any, preferredLanguage: string) {
+    if (obj.hasOwnProperty(preferredLanguage)) {
+      return obj[preferredLanguage];
+    }
+
+    for (const language in obj) {
+      if (obj.hasOwnProperty(language)) {
+        return obj[language];
+      }
+    }
+    return "";
+  }
+
   show(consentMessage: ConsentMessage) {
     this.consentMessage = consentMessage;
 
@@ -38,7 +51,15 @@ export class ConsentPopup extends ShadowDom {
         : "Contacting Consent";
 
     const descriptions = this.consentMessage.permission.map((p) => {
-      return p.fullDescription[this.pam.config.preferLanguage] || "";
+      const preferLang = this.pam.config.preferLanguage;
+      if (p.isFullDescriptionEnabled) {
+        const txt = this.getTextFromPreferLang(p.fullDescription, preferLang);
+        if (txt.length > 0) {
+          return txt;
+        }
+      }
+      const txt = this.getTextFromPreferLang(p.briefDescription, preferLang);
+      return txt;
     });
 
     const variables = {
