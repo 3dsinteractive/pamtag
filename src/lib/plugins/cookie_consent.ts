@@ -42,6 +42,22 @@ export class CookieConsentPlugin extends Plugin {
           return payload;
         }
       }
+
+      if (payload.event == "allow_consent") {
+        if (!pam.config.publicDBAlias) {
+          window.localStorage.setItem(
+            "offline_consent",
+            JSON.stringify(payload)
+          );
+          window.localStorage.setItem(
+            "offline_consent_date",
+            new Date().toString()
+          );
+          payload.cancel = true;
+          return payload;
+        }
+      }
+
       return payload;
     });
 
@@ -55,6 +71,20 @@ export class CookieConsentPlugin extends Plugin {
   }
 
   private async renderConsentBar(consentMessageId: string) {
+    const offlineConsentDate = window.localStorage.getItem(
+      "offline_consent_date"
+    );
+
+    if (this.pam.config.publicDBAlias == "" && offlineConsentDate) {
+      const date = new Date(offlineConsentDate);
+      const now = new Date();
+      const timeDifference = now.getTime() - date.getTime();
+      const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
+      if (dayDifference < 30) {
+        return;
+      }
+    }
+
     const consentMessage = await this.pam.loadConsentDetail(consentMessageId);
     this.cookieConsentBar.show(consentMessage);
   }

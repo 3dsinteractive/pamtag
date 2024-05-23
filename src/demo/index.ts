@@ -3,7 +3,7 @@ const pam = new PamTracker({
   webPushPublicKey: "",
   baseApi: "https://stgx.pams.ai",
   trackingConsentMessageId: "1qDQOyMeBv64LYnXi6dJOcZp2YQ",
-  publicDBAlias: "ecom-public",
+  publicDBAlias: "", //"ecom-public",
   loginDBAlias: "ecom-public",
   loginKey: "email",
   autoTrackPageview: true,
@@ -21,7 +21,7 @@ body{
 
 document.querySelector(
   "body"
-).innerHTML = `<h1>Hello World!</h1><button id="openConsent">Consent</button>`;
+).innerHTML = `<h1>Hello World!</h1><button id="openConsent">Consent</button><br><button id="trackEvent">TrackEvent</button>`;
 
 const tracking = "1qDQOyMeBv64LYnXi6dJOcZp2YQ";
 const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
@@ -29,6 +29,11 @@ const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
 var btn = document.getElementById("openConsent");
 btn.addEventListener("click", async (e) => {
   test();
+});
+
+var trackEvent = document.getElementById("trackEvent");
+trackEvent.addEventListener("click", async (e) => {
+  pam.track(`test_event`, { test: 1 });
 });
 
 function test() {
