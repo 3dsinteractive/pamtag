@@ -83,11 +83,16 @@
       for (let i = 0; i < 5; i++) {
         console.log(i);
       }
-      
-      it.CUSTOM_JS
     %>
   </div>
   <script>
-    <%= it.CUSTOM_JS %>
+    /* <%= it.CUSTOM_JS %> */
+    <% it.CUSTOM_JS  %>
+
   </script>
+  <% <script type="text/javascript">
+    /* <%= it.CUSTOM_JS %> */
+    it.CUSTOM_JS
+
+  </script> %>
 </div>
