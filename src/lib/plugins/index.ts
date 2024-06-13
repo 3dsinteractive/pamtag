@@ -7,10 +7,12 @@ import { GoogleTagManager } from "./google_tag_manager";
 import { WebAttenTionPlugin } from "./web_attention";
 import { CookieConsentPlugin } from "./cookie_consent";
 import IConfig from "../interface/iconfig";
+import { AffiliateAndRedirectId } from "./affiliate_redirect_id";
 
 export class PluginRegistration {
   static getPlugins(config: IConfig): Plugin[] {
     let plugins: Plugin[] = [
+      new AffiliateAndRedirectId(),
       new GoogleTagManager(),
       new AutoPageView(),
       new LoginState(),
