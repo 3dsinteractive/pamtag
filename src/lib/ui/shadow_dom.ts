@@ -45,13 +45,11 @@ export default class ShadowDom {
       // script.src ='https://s3-ap-southeast-1.amazonaws.com/pam6-demo/script/alert.js';
       script.type = "text/javascript";
       script.async = true;
-      script.innerHTML = "console.log(333333);";
+      script.innerHTML = variable?.CUSTOM_JS;
       // make code in script to be treated as JavaScript module
       // script.type = 'module';
       script.onload = () => {
         console.log('Script loaded successfuly');
-        const box = document.getElementById('box');
-        box.textContent = 'The script has loaded.';
       };
       script.onerror = () => {
         console.log('Error occurred while loading script');
