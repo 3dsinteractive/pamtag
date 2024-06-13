@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<div>
+<html>
+  <head>
+    <meta charset="UTF-8" />
     <style>
       .attention-container {
         position: fixed;
@@ -74,14 +76,16 @@
       }
       <%= it.CUSTOM_CSS %>
     </style>
+  </head>
+  <body>
     <div class="attention-container">
       <div class="attention-body <%= it.POPUP_BODY_CLASS %>">
         <div class="x-icon"></div>
         <%= it.CONTENT %>
       </div>
-      <%* it.CUSTOM_JS %>
     </div>
     <script>
-      /* <%= it.CUSTOM_JS %> */
+      <%= it.CUSTOM_JS %>
     </script>
-</div>
+  </body>
+</html>
