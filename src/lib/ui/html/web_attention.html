@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<!-- <html>
+  <head> -->
     <meta charset="UTF-8" />
-    <script src="https://gist.githubusercontent.com/iliakan/9462615/raw/b219ef134dd197524e0e2faac2c2d43062eaaf5f/alert.js"></script>
-  <div>
+    <script src="https://s3-ap-southeast-1.amazonaws.com/pam6-demo/script/alert.js"></script>
+  <div onload="console.log('The Script will load now.')">
     <style>
       .attention-container {
         position: fixed;
@@ -78,9 +78,9 @@
       }
       <%= it.CUSTOM_CSS %>
     </style>
-  </head>
-  <body onload="console.log('The Script will load now.')">
-    <div class="attention-container">
+  /* </head>
+  <body > */
+    <div class="attention-container" >
       <div class="attention-body <%= it.POPUP_BODY_CLASS %>">
         <div class="x-icon"></div>
         <%= it.CONTENT %>
@@ -90,6 +90,9 @@
     <script>
       <%= it.CUSTOM_JS %>
     </script>
+    <script>
+      console.log(222);
+    </script>
   </div>
-  </body>
-</html>
+  /* </body>
+</html> */
