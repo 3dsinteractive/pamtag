@@ -42,8 +42,10 @@ export default class ShadowDom {
       // use local file
       // script.src = 'script.js';
       // script.src ='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js';
-      script.src ='https://s3-ap-southeast-1.amazonaws.com/pam6-demo/script/alert.js';
+      // script.src ='https://s3-ap-southeast-1.amazonaws.com/pam6-demo/script/alert.js';
+      script.type = "text/javascript";
       script.async = true;
+      script.innerHTML = "console.log(333333);";
       // make code in script to be treated as JavaScript module
       // script.type = 'module';
       script.onload = () => {
