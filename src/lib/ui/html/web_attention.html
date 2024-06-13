@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<!-- <html>
+<html>
   <head>
-    <meta charset="UTF-8" /> -->
+    <meta charset="UTF-8" />
+    <script src="https://gist.githubusercontent.com/iliakan/9462615/raw/b219ef134dd197524e0e2faac2c2d43062eaaf5f/alert.js"></script>
   <div>
     <style>
       .attention-container {
@@ -77,8 +78,8 @@
       }
       <%= it.CUSTOM_CSS %>
     </style>
-  /* </head>
-  <body> */
+  </head>
+  <body onload="console.log('The Script will load now.')">
     <div class="attention-container">
       <div class="attention-body <%= it.POPUP_BODY_CLASS %>">
         <div class="x-icon"></div>
@@ -90,5 +91,5 @@
       <%= it.CUSTOM_JS %>
     </script>
   </div>
-  /* </body>
-</html> */
+  </body>
+</html>
