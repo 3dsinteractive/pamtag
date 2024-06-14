@@ -37,10 +37,13 @@ export class CookieConsentPlugin extends Plugin {
         payload.event != "login" &&
         payload.event != "logout"
       ) {
-        if (!this.allowTracking) {
-          payload.cancel = true;
-          return payload;
+        if (pam.config.block_events_if_no_consent === true) {
+          if (!this.allowTracking) {
+            payload.cancel = true;
+            return payload;
+          }
         }
+        return payload;
       }
 
       if (payload.event == "allow_consent") {

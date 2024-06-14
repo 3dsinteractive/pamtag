@@ -12,4 +12,5 @@ export default interface IConfig {
   preferLanguage?: string;
   gtmConsentMode?: boolean;
   facebookConsentMode?: boolean;
+  block_events_if_no_consent?: boolean;
 }
