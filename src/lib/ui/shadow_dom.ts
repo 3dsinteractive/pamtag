@@ -126,9 +126,10 @@ export default class ShadowDom {
             return Object.keys(objectName).length === 0
           }
           if (!isObjectEmpty(formDataObj)) {
-            window.pam.track("web_attention", formDataObj);
-            alert('Form submitted successfully!');
-            pamShadowRoot.querySelector(".x-icon").click();
+            window.pam.track("web_attention", formDataObj).then(data => {
+              alert('Form submitted successfully!');
+              pamShadowRoot.querySelector(".x-icon").click();
+            });
           }
         }
       }
