@@ -118,10 +118,14 @@ export default class ShadowDom {
             }
           }
 
-          const formDataJson = getFormDataAsJson(form);
-          console.log('formDataJson', formDataJson);
-          if (formDataJson) {
-            window.pam.track("web_attention", formDataJson);
+          const formDataObj = getFormDataAsJson(form);
+          console.log('formDataObj', formDataObj);
+
+          const isObjectEmpty = (objectName) => {
+            return Object.keys(objectName).length === 0
+          }
+          if (!isObjectEmpty(formDataObj)) {
+            window.pam.track("web_attention", formDataObj);
             pamShadowRoot.querySelector(".x-icon").click();
           }
         }
@@ -146,6 +150,7 @@ export default class ShadowDom {
 
       return formEntries;
     }
+    
     ` 
 
     return script;
