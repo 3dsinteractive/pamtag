@@ -111,6 +111,7 @@ export default class ShadowDom {
           //   }
           // });
 
+          console.log(typeof validateAttentionForm === "function");
           if (typeof validateAttentionForm === "function") {
             let isValidatePass = validateAttentionForm(form);
             if (!isValidatePass) {
@@ -126,6 +127,7 @@ export default class ShadowDom {
           }
           if (!isObjectEmpty(formDataObj)) {
             window.pam.track("web_attention", formDataObj);
+            alert('Form submitted successfully!');
             pamShadowRoot.querySelector(".x-icon").click();
           }
         }
