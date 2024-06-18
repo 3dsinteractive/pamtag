@@ -127,7 +127,7 @@ export default class ShadowDom {
           }
           if (!isObjectEmpty(formDataObj)) {
             window.pam.track("web_attention", formDataObj).then(data => {
-              alert('Form submitted successfully!');
+              // alert('Form submitted successfully!');
               pamShadowRoot.querySelector(".x-icon").click();
             });
           }
