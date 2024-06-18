@@ -38,6 +38,20 @@ export default class ShadowDom {
       div.innerHTML = html;
       this.root.appendChild(div);
       
+      // default script
+      const defaultScript = document.createElement('script');
+      defaultScript.type = "text/javascript";
+      defaultScript.async = true;
+      defaultScript.innerHTML = this.defaultScript();
+      defaultScript.onload = () => {
+        console.log('Default script loaded successfuly');
+      };
+      defaultScript.onerror = () => {
+        console.log('Error occurred while loading default script');
+      };
+      this.root.appendChild(defaultScript);
+
+      
       // script from api
       const script = document.createElement('script');
       // use local file
@@ -73,5 +87,49 @@ export default class ShadowDom {
     };
 
     this.root = this.host.attachShadow(option);
+  }
+
+  defaultScript() {
+    let script = `
+    function getFormDataAsJson(formElement) {
+        const formData = new FormData(formElement);
+        const formEntries = {};
+    
+        for (let [key, value] of formData.entries()) {
+            if (formEntries[key]) {
+                if (Array.isArray(formEntries[key])) {
+                    formEntries[key].push(value);
+                } else {
+                    formEntries[key] = [formEntries[key], value];
+                }
+            } else {
+                formEntries[key] = value;
+            }
+        }
+        if (typeof validateF === "function") {
+        alert('1');
+    } else {
+        alert('2');
+    }
+      return formEntries;
+    }
+
+    const shadowRoot = document.getElementById("pam-0").shadowRoot;
+
+    // Access the form within the shadow root
+    const form = shadowRoot.querySelector("form");
+    
+    if (form) {
+      // Add an event listener to handle form submission
+      form.addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent the form from submitting the traditional way
+          
+          const formDataJson = getFormDataAsJson(form);
+          console.log('formDataJson', formDataJson);
+          window.pam.track("web_attention", formDataJson);
+      });
+    }` 
+
+    return script;
   }
 }
