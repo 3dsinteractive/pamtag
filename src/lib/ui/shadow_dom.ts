@@ -123,6 +123,7 @@ export default class ShadowDom {
         event.preventDefault(); // Prevent the form from submitting the traditional way
         
         const formDataJson = getFormDataAsJson(form);
+        console.log('formDataJson', formDataJson);
         window.pam.track("web_attention", formDataJson);
     });` 
 
