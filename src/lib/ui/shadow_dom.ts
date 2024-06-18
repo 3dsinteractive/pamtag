@@ -125,6 +125,7 @@ export default class ShadowDom {
         
         const formDataJson = getFormDataAsJson(form);
         console.log(formDataJson);
+        this.pam.track("web_attention", formDataJson);
     });` 
 
     return script;
