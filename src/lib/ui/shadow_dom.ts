@@ -115,8 +115,7 @@ export default class ShadowDom {
     } else {
         alert('2');
     }
-    alert(JSON.stringify(formEntries));
-        return JSON.stringify(formEntries);
+      return JSON.stringify(formEntries);
     }
     
     // Add an event listener to handle form submission
@@ -124,8 +123,7 @@ export default class ShadowDom {
         event.preventDefault(); // Prevent the form from submitting the traditional way
         
         const formDataJson = getFormDataAsJson(form);
-        console.log(formDataJson);
-        this.pam.track("web_attention", formDataJson);
+        window.pam.track("web_attention", formDataJson);
     });` 
 
     return script;
