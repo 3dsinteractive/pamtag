@@ -2,6 +2,8 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+
+  <div >
     <style>
       .attention-container {
         position: fixed;
@@ -10,7 +12,6 @@
         right: 0;
         bottom: 0;
         background-color: <%= it.SHADOW_BG_COLOR %>;
-        z-index: 9999999;
       }
 
       .attention-body {
@@ -78,15 +79,18 @@
       <%= it.CUSTOM_CSS %>
     </style>
   </head>
-  <body>
-    <div class="attention-container">
+  <body >
+    <div class="attention-container" >
       <div class="attention-body <%= it.POPUP_BODY_CLASS %>">
         <div class="x-icon"></div>
-        <%= it.CONTENT %>
+        <div class="attention-content">
+          <%= it.CONTENT %>
+        </div>
       </div>
     </div>
-    <script>
+    /* <script>
       <%= it.CUSTOM_JS %>
-    </script>
+    </script> */
+  </div>
   </body>
 </html>
