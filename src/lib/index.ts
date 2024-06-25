@@ -11,6 +11,7 @@ import { ConsentPopup } from "./ui/consent_popup";
 import { PopupConsentResult } from "./interface/popup_consent_result";
 import { HashGenerator } from "./crypto/HashGenerator";
 import { LoginOptions } from "./options/LoginOptions";
+import { ICustomerConsentStatus } from "./interface/iconsent_status";
 class PamTracker {
   config: IConfig;
   api: PamAPI;
@@ -250,6 +251,18 @@ class PamTracker {
     };
 
     return this.queueManager.enqueueJob(job);
+  }
+
+  async loadConsentStatus(
+    consentMessageId: string
+  ): Promise<ICustomerConsentStatus> {
+    let contactId = this.contactState.getContactId();
+    if (contactId) {
+      return await this.api.loadConsentStatus(contactId, consentMessageId);
+    }
+    return {
+      need_consent_review: true,
+    };
   }
 
   eventBucket(callBack: () => void) {
