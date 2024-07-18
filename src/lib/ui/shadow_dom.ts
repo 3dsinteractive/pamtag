@@ -47,6 +47,7 @@ export default class ShadowDom {
 
       const div = document.createElement("div");
       div.innerHTML = html;
+
       this.root.appendChild(div);
 
       // default script

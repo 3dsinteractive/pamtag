@@ -19,9 +19,10 @@ body{
 }
 </style>`;
 
-document.querySelector(
-  "body"
-).innerHTML = `<h1>Hello World!</h1><button id="openConsent">Consent</button><br><button id="trackEvent">TrackEvent</button>`;
+document.querySelector("body").innerHTML = `
+<div id="masthead"></div>
+<div class="site-header-space"></div>
+<h1>Hello World!</h1><button id="openConsent">Consent</button><br><button id="trackEvent">TrackEvent</button>`;
 
 const tracking = "1qDQOyMeBv64LYnXi6dJOcZp2YQ";
 const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
@@ -50,5 +51,3 @@ function test() {
     pam.track(`c`, { round: i });
   });
 }
-
-//console.log(pam.hashGenerator.sha256("12345"));

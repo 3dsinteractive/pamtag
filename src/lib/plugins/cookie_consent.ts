@@ -16,6 +16,7 @@ export class CookieConsentPlugin extends Plugin {
 
     this.cookieConsentBar.onShow = () => {
       this.pam.config.consentBarAdpter?.onShow?.(this);
+      this.cookieConsentBar?.attachShadowDom(true);
     };
 
     this.cookieConsentBar.onHide = () => {
