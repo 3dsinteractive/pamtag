@@ -12,6 +12,7 @@ import { PopupConsentResult } from "./interface/popup_consent_result";
 import { HashGenerator } from "./crypto/HashGenerator";
 import { LoginOptions } from "./options/LoginOptions";
 import { ICustomerConsentStatus } from "./interface/iconsent_status";
+import consentBarAdapter from "./consent_bar_adapter";
 class PamTracker {
   config: IConfig;
   api: PamAPI;
@@ -100,6 +101,11 @@ class PamTracker {
       config.preferLanguage = "th";
     }
     this.config = config;
+
+    if (!this.config.consentBarAdpter) {
+      this.config.consentBarAdpter = consentBarAdapter;
+    }
+
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", () => {
         this.initialize(config);
