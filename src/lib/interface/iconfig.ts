@@ -1,3 +1,9 @@
+import { CookieConsentPlugin } from "../plugins/cookie_consent";
+interface ConsentBarAdapter {
+  onShow?: (bar: CookieConsentPlugin) => void;
+  onHide?: (bar: CookieConsentPlugin) => void;
+}
+
 export default interface IConfig {
   webPushPublicKey?: string;
   baseApi: string;
@@ -13,4 +19,5 @@ export default interface IConfig {
   gtmConsentMode?: boolean;
   facebookConsentMode?: boolean;
   block_events_if_no_consent?: boolean;
+  consentBarAdpter?: ConsentBarAdapter;
 }

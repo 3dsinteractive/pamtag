@@ -6,11 +6,22 @@ export default class ShadowDom {
   hostId: string;
   root?: ShadowRoot;
   pam: PamTracker;
+  containerElement?: HTMLElement;
+
   private static count = 0;
 
   constructor(pam: PamTracker) {
     this.pam = pam;
     this.hostId = `pam-${ShadowDom.count++}`;
+    this.resetContainerDOM();
+  }
+
+  setContainerDOM(element: HTMLElement) {
+    this.containerElement = element;
+  }
+
+  resetContainerDOM() {
+    this.containerElement = document.body;
   }
 
   destroy() {
@@ -37,23 +48,22 @@ export default class ShadowDom {
       const div = document.createElement("div");
       div.innerHTML = html;
       this.root.appendChild(div);
-      
+
       // default script
-      const defaultScript = document.createElement('script');
+      const defaultScript = document.createElement("script");
       defaultScript.type = "text/javascript";
       defaultScript.async = true;
       defaultScript.innerHTML = this.defaultScript();
       defaultScript.onload = () => {
-        console.log('Default script loaded successfuly');
+        console.log("Default script loaded successfuly");
       };
       defaultScript.onerror = () => {
-        console.log('Error occurred while loading default script');
+        console.log("Error occurred while loading default script");
       };
       this.root.appendChild(defaultScript);
 
-      
       // script from api
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       // use local file
       // script.src = 'script.js';
       // script.src ='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js';
@@ -63,10 +73,10 @@ export default class ShadowDom {
       // make code in script to be treated as JavaScript module
       // script.type = 'module';
       script.onload = () => {
-        console.log('Script loaded successfuly');
+        console.log("Script loaded successfuly");
       };
       script.onerror = () => {
-        console.log('Error occurred while loading script');
+        console.log("Error occurred while loading script");
       };
       this.root.appendChild(script);
 
@@ -80,7 +90,8 @@ export default class ShadowDom {
   attachShadowDom(open: boolean) {
     this.host = document.createElement("div");
     this.host.id = this.hostId;
-    document.body.appendChild(this.host);
+
+    this.containerElement.appendChild(this.host);
 
     const option: ShadowRootInit = {
       mode: open ? "open" : "closed",
@@ -154,7 +165,7 @@ export default class ShadowDom {
       return formEntries;
     }
     
-    ` 
+    `;
 
     return script;
   }

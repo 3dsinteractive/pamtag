@@ -13,7 +13,14 @@ export class CookieConsentPlugin extends Plugin {
   override initPlugin(pam: PamTracker): void {
     this.pam = pam;
     this.cookieConsentBar = new CookieConsentBatUI(this.pam);
-    this.cookieConsentBar.attachShadowDom(true);
+
+    this.cookieConsentBar.onShow = () => {
+      this.pam.config.consentBarAdpter?.onShow?.(this);
+    };
+
+    this.cookieConsentBar.onHide = () => {
+      this.pam.config.consentBarAdpter?.onHide?.(this);
+    };
 
     this.consentPopup = new ConsentPopup(pam);
     this.consentPopup.attachShadowDom(true);
@@ -89,7 +96,12 @@ export class CookieConsentPlugin extends Plugin {
     }
 
     const consentMessage = await this.pam.loadConsentDetail(consentMessageId);
+
     this.cookieConsentBar.show(consentMessage);
+  }
+
+  setContainerDOM(ele: HTMLElement) {
+    this.cookieConsentBar.setContainerDOM(ele);
   }
 
   private async checkConsentPermission(): Promise<ICustomerConsentStatus | null> {

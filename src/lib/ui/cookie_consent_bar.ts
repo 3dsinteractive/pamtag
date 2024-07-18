@@ -7,7 +7,12 @@ export class CookieConsentBatUI extends ShadowDom {
   onOpenMoreInfo?: (consentMessage: ConsentMessage) => void;
   consentMessage: ConsentMessage;
 
+  onShow?: () => void;
+  onHide?: () => void;
+
   show(consentMessage: ConsentMessage) {
+    this.onShow?.();
+
     this.consentMessage = consentMessage;
     let alpha = 1;
     if (
@@ -61,6 +66,7 @@ export class CookieConsentBatUI extends ShadowDom {
     const closeButton = div.getElementsByClassName("x-icon")[0];
     closeButton.addEventListener("click", () => {
       this.removeAllChild();
+      this.onHide?.();
     });
   }
 
@@ -68,6 +74,7 @@ export class CookieConsentBatUI extends ShadowDom {
     consentMessage.allowAll();
     this.pam.submitConsent(consentMessage);
     this.removeAllChild();
+    this.onHide?.();
   }
 
   private openMoreInfoPopup(consentMessage: ConsentMessage) {
