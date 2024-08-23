@@ -10,7 +10,7 @@ export default class ShadowDom {
 
   private static count = 0;
 
-  constructor(pam: PamTracker) {
+  constructor(pam: PamTracker, readOnly: boolean = false) {
     this.pam = pam;
     this.hostId = `pam-${ShadowDom.count++}`;
     this.resetContainerDOM();

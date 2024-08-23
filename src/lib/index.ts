@@ -366,11 +366,13 @@ class PamTracker {
   }
 
   async openConsentPopup(
-    consentMessageId: string
+    consentMessageId: string,
+    readOnly: boolean = false
   ): Promise<PopupConsentResult> {
     return new Promise<PopupConsentResult>(async (resolve, reject) => {
       const consentMessage = await this.loadConsentDetail(consentMessageId);
       const popup = new ConsentPopup(this);
+      popup.readonly = readOnly;
       popup.attachShadowDom(true);
       popup.show(consentMessage);
       popup.onClose = async () => {

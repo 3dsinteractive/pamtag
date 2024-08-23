@@ -29,7 +29,8 @@ const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
 
 var btn = document.getElementById("openConsent");
 btn.addEventListener("click", async (e) => {
-  test();
+  pam.openConsentPopup(contact, true);
+  // test();
 });
 
 var trackEvent = document.getElementById("trackEvent");

@@ -12,6 +12,8 @@ export class ConsentPopup extends ShadowDom {
   private popupDom: HTMLElement;
   private currentFullDescItem = -1;
 
+  readonly: boolean = false;
+
   onSaveConfig: (consentMessage: ConsentMessage) => Promise<void>;
   onClose: () => Promise<void>;
 
@@ -89,7 +91,47 @@ export class ConsentPopup extends ShadowDom {
     this.initPermissionSwitchEvent(this.popupDom);
     this.initFullDetailButton(this.popupDom);
     this.initSaveButtonEvent(this.popupDom);
+    this.hideOrShowActionButton(this.popupDom);
   }
+
+  hideOrShowActionButton(popupDom: HTMLElement) {
+    if (this.readonly) {
+      const elements = popupDom.getElementsByClassName(
+        "switch-on-off"
+      ) as HTMLCollectionOf<HTMLElement>;
+
+      for (var i = 0; i < elements.length; i++) {
+        elements[i].style.visibility = "hidden";
+      }
+
+      let a = popupDom.getElementsByClassName(
+        "save-btn"
+      ) as HTMLCollectionOf<HTMLElement>;
+      a[0].style.visibility = "hidden";
+      let b = popupDom.getElementsByClassName(
+        "accept-all-btn"
+      ) as HTMLCollectionOf<HTMLElement>;
+      b[0].style.visibility = "hidden";
+    } else {
+      const elements = popupDom.getElementsByClassName(
+        "switch-on-off"
+      ) as HTMLCollectionOf<HTMLElement>;
+
+      for (var i = 0; i < elements.length; i++) {
+        elements[i].style.visibility = "visible";
+      }
+
+      let a = popupDom.getElementsByClassName(
+        "save-btn"
+      ) as HTMLCollectionOf<HTMLElement>;
+      a[0].style.visibility = "visible";
+      let b = popupDom.getElementsByClassName(
+        "accept-all-btn"
+      ) as HTMLCollectionOf<HTMLElement>;
+      b[0].style.visibility = "visible";
+    }
+  }
+
   initSaveButtonEvent(popupDom: HTMLElement) {
     popupDom
       .getElementsByClassName("save-btn")[0]
