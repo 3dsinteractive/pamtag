@@ -41,21 +41,21 @@ export class ConsentMessage {
     permission: TrackingConsentKey | ContactingConsentKey,
     isAllow: boolean
   ) {
-    if (
-      (permission === TrackingConsentKey.TermsAndConditions ||
-        permission === ContactingConsentKey.TermsAndConditions) &&
-      !isAllow
-    ) {
-      throw Error("TermsAndConditions Cannot be disallow");
-    }
+    // if (
+    //   (permission === TrackingConsentKey.TermsAndConditions ||
+    //     permission === ContactingConsentKey.TermsAndConditions) &&
+    //   !isAllow
+    // ) {
+    //   throw Error("TermsAndConditions Cannot be disallow");
+    // }
 
-    if (
-      (permission === TrackingConsentKey.PrivacyOverview ||
-        permission === ContactingConsentKey.PrivacyOverview) &&
-      !isAllow
-    ) {
-      throw Error("PrivacyOverview Cannot be disallow");
-    }
+    // if (
+    //   (permission === TrackingConsentKey.PrivacyOverview ||
+    //     permission === ContactingConsentKey.PrivacyOverview) &&
+    //   !isAllow
+    // ) {
+    //   throw Error("PrivacyOverview Cannot be disallow");
+    // }
 
     for (const i in this.permission) {
       if (this.permission[i].key === permission) {
