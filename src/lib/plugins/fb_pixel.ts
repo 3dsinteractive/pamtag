@@ -1,11 +1,12 @@
 import PamTracker from "..";
 import { Plugin } from "../core/plugin";
+import { Utils } from "../utils";
 
 export class FBPixel extends Plugin {
   override initPlugin(pam: PamTracker): void {
-    pam.hook.onPreTracking("*", (p) => {
-      const fbp = pam.utils.getCookie("_fbp");
-      const fbc = pam.utils.getCookie("_fbc");
+    pam.hook.onPreTracking("*", async (p) => {
+      const fbp = await Promise.resolve(Utils.getCookie("_fbp"));
+      const fbc = await Promise.resolve(Utils.getCookie("_fbc"));
       if (fbp) {
         p.form_fields._fbp = fbp;
       }

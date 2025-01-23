@@ -3,6 +3,7 @@ import { Plugin } from "../core/plugin";
 import { ICustomerConsentStatus } from "../interface/iconsent_status";
 import { ConsentPopup } from "../ui/consent_popup";
 import { CookieConsentBatUI } from "../ui/cookie_consent_bar";
+import { Utils } from "../utils";
 import { GoogleTagManager } from "./google_tag_manager";
 export class CookieConsentPlugin extends Plugin {
   private pam: PamTracker;
@@ -56,14 +57,8 @@ export class CookieConsentPlugin extends Plugin {
 
       if (payload.event == "allow_consent") {
         if (!pam.config.publicDBAlias) {
-          window.localStorage.setItem(
-            "offline_consent",
-            JSON.stringify(payload)
-          );
-          window.localStorage.setItem(
-            "offline_consent_date",
-            new Date().toString()
-          );
+          Utils.setLocalStorage("offline_consent", JSON.stringify(payload));
+          Utils.setLocalStorage("offline_consent_date", new Date().toString());
           payload.cancel = true;
           return payload;
         }
@@ -82,8 +77,8 @@ export class CookieConsentPlugin extends Plugin {
   }
 
   private async renderConsentBar(consentMessageId: string) {
-    const offlineConsentDate = window.localStorage.getItem(
-      "offline_consent_date"
+    const offlineConsentDate = await Promise.resolve(
+      Utils.getLocalStorage("offline_consent_date")
     );
 
     if (this.pam.config.publicDBAlias == "" && offlineConsentDate) {

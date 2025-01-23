@@ -7,6 +7,7 @@ import {
   AttentionType,
 } from "../interface/attention";
 import { WebAttentionPopup } from "../ui/web_attention_popup";
+import { Utils } from "../utils";
 
 export class WebAttenTionPlugin extends Plugin {
   private previousUrl = "";
@@ -23,7 +24,7 @@ export class WebAttenTionPlugin extends Plugin {
 
     pam.hook.onStartup(async (config) => {
       var observer = new MutationObserver((mutations) => {
-        const url = pam.utils.getPageURL();
+        const url = Utils.getPageURL();
         if (url !== this.previousUrl) {
           this.reset();
           this.previousUrl = url;
@@ -70,7 +71,7 @@ export class WebAttenTionPlugin extends Plugin {
   }
 
   private async fetchWebAttention(pam: PamTracker) {
-    const url = pam.utils.getPageURL();
+    const url = Utils.getPageURL();
     const contactID = pam.contactState.getContactId();
     try {
       const attention = await pam.api.getWebAttention(contactID, url);
@@ -87,7 +88,7 @@ export class WebAttenTionPlugin extends Plugin {
 
   private onScrolling = () => {
     const percent = this.attention.options.display_after.percent || 0;
-    if (this.pam.utils.getScrollPercent() >= percent && !this.isRendered) {
+    if (Utils.getScrollPercent() >= percent && !this.isRendered) {
       this.render();
     }
   };

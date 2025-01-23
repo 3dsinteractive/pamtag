@@ -2,6 +2,7 @@ import PamTracker from "..";
 import { IAttentionItem, AttentionType } from "../interface/attention";
 import { ConsentMessage } from "../interface/consent_message";
 import ShadowDom from "../ui/shadow_dom";
+import { Utils } from "../utils";
 import htmlContent from "./html/web_attention.html";
 
 export class WebAttentionPopup extends ShadowDom {
@@ -22,10 +23,8 @@ export class WebAttentionPopup extends ShadowDom {
       } else {
         opacity = opacity / 100;
       }
-      const shadowBGColor = this.pam.utils.applyOpacityToColor(
-        "#000000",
-        opacity
-      );
+
+      const shadowBGColor = Utils.applyOpacityToColor("#000000", opacity);
 
       let customCSS = attention.css;
       if (attention.custom_css) {

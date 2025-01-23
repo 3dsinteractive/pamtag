@@ -13,12 +13,13 @@ import { HashGenerator } from "./crypto/HashGenerator";
 import { LoginOptions } from "./options/LoginOptions";
 import { ICustomerConsentStatus } from "./interface/iconsent_status";
 import consentBarAdapter from "./consent_bar_adapter";
+import { BrowserStorageProvider, IStorageProvider } from "./storage_provider";
 class PamTracker {
+  storage: IStorageProvider;
   config: IConfig;
   api: PamAPI;
   contactState: ContactStateManager;
   hook = new Hook();
-  utils = new Utils();
   ready = false;
 
   hashGenerator = new HashGenerator();
@@ -95,7 +96,14 @@ class PamTracker {
     return [];
   });
 
-  constructor(config: IConfig) {
+  constructor(config: IConfig, storage?: IStorageProvider) {
+    Utils.setConfig(config);
+    if (!storage) {
+      this.storage = new BrowserStorageProvider();
+    }
+
+    Utils.setStorageProvider(this.storage);
+
     this.createGetPamFunction();
     if (!config.preferLanguage) {
       config.preferLanguage = "th";
@@ -105,8 +113,9 @@ class PamTracker {
     if (!this.config.consentBarAdpter) {
       this.config.consentBarAdpter = consentBarAdapter;
     }
-
-    if (document.readyState === "loading") {
+    if (config.mobileAppMode) {
+      this.initialize(config);
+    } else if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", () => {
         this.initialize(config);
       });
@@ -139,7 +148,7 @@ class PamTracker {
     };
   }
 
-  private initialize(config: IConfig) {
+  private async initialize(config: IConfig) {
     this.api = new PamAPI(config.baseApi);
 
     //Contact state will handle the state inside plugins/login_state.ts
@@ -148,7 +157,7 @@ class PamTracker {
       config.loginDBAlias,
       config.loginKey
     );
-    this.contactState.resumeSession();
+    await this.contactState.resumeSession();
 
     if (!this.config.sessionExpireTimeMinutes) {
       this.config.sessionExpireTimeMinutes = 60;

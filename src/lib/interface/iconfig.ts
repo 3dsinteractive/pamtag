@@ -20,4 +20,5 @@ export default interface IConfig {
   facebookConsentMode?: boolean;
   block_events_if_no_consent?: boolean;
   consentBarAdpter?: ConsentBarAdapter;
+  mobileAppMode?: boolean;
 }

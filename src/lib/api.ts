@@ -6,6 +6,7 @@ import {
 import { ConsentMessage } from "./interface/consent_message";
 import { IAttentionItem } from "./interface/attention";
 import { ICustomerConsentStatus } from "./interface/iconsent_status";
+import { Utils } from "./utils";
 export class PamAPI {
   private http: HTTPClient;
 
@@ -13,30 +14,31 @@ export class PamAPI {
     this.http = new HTTPClient(baseAPIURL);
   }
 
-  private getPageURL() {
-    return window.document.location && window.document.location.href;
-  }
-
   async getWebAttention(
     contactId: string,
     pageUrl: string
   ): Promise<IAttentionItem> {
-    return await this.http.post(
-      "/attention",
-      {
-        page_url: decodeURI(this.getPageURL()),
-        _contact_id: contactId,
-      },
-      {}
-    );
+    let payload: any = {
+      _contact_id: contactId,
+    };
+
+    const url = Utils.getPageURL();
+    if (url) {
+      payload.page_url = decodeURI(url);
+    }
+
+    return await this.http.post("/attention", payload, {});
   }
 
   getDefaultPayload(): Record<string, any> {
+    let payload: any = {};
+    const lang = Utils.getBrowserLanguage();
+
     return {
       page_language: window.navigator.language,
       page_referrer: window.document.referrer,
       page_title: window.document.title,
-      page_url: decodeURI(this.getPageURL()),
+      page_url: decodeURI(Utils.getPageURL()),
       platform: "browser",
       user_agent: window.navigator.userAgent,
     };

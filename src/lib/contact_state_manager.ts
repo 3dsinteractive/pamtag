@@ -12,8 +12,6 @@ export class ContactStateManager {
 
   private loginStatus = false;
 
-  utls = new Utils();
-
   constructor(publicDB: string, loginDB: string, loginKey: string) {
     this.publicDB = publicDB;
     this.loginDB = loginDB;
@@ -26,27 +24,30 @@ export class ContactStateManager {
     this.publicContact = "";
     this.loginContact = "";
 
-    this.utls.deleteCookie("loginStatus");
-    this.utls.deleteCookie("loginId");
-    this.utls.deleteCookie("publicContact");
-    this.utls.deleteCookie("loginContact");
-    this.utls.deleteCookie("contact_id");
+    Utils.deleteCookie("loginStatus");
+    Utils.deleteCookie("loginId");
+    Utils.deleteCookie("publicContact");
+    Utils.deleteCookie("loginContact");
+    Utils.deleteCookie("contact_id");
   }
 
-  resumeSession() {
-    this.loginStatus = this.utls.getCookie("loginStatus") == "true";
-    this.loginId = this.utls.getCookie("loginId") ?? "";
-    this.publicContact = this.utls.getCookie("publicContact") ?? "";
-    this.loginContact = this.utls.getCookie("loginContact") ?? "";
+  async resumeSession() {
+    this.loginStatus =
+      (await Promise.resolve(Utils.getCookie("loginStatus"))) == "true";
+    this.loginId = (await Promise.resolve(Utils.getCookie("loginId"))) ?? "";
+    this.publicContact =
+      (await Promise.resolve(Utils.getCookie("publicContact"))) ?? "";
+    this.loginContact =
+      (await Promise.resolve(Utils.getCookie("loginContact"))) ?? "";
   }
 
   setContactId(contactId: string) {
     if (this.loginStatus) {
       this.loginContact = contactId;
-      this.utls.setCookie("loginContact", contactId, this.cookieExpireHours);
+      Utils.setCookie("loginContact", contactId, this.cookieExpireHours);
     } else {
       this.publicContact = contactId;
-      this.utls.setCookie("publicContact", contactId, this.cookieExpireHours);
+      Utils.setCookie("publicContact", contactId, this.cookieExpireHours);
     }
   }
 
@@ -54,16 +55,16 @@ export class ContactStateManager {
     this.loginId = loginId;
     this.loginStatus = true;
 
-    this.utls.setCookie("loginId", loginId, this.cookieExpireHours);
-    this.utls.setCookie("loginStatus", "true", this.cookieExpireHours);
+    Utils.setCookie("loginId", loginId, this.cookieExpireHours);
+    Utils.setCookie("loginStatus", "true", this.cookieExpireHours);
   }
 
   logout() {
     this.loginId = "";
     this.loginStatus = false;
 
-    this.utls.deleteCookie("loginId");
-    this.utls.deleteCookie("loginStatus");
+    Utils.deleteCookie("loginId");
+    Utils.deleteCookie("loginStatus");
   }
 
   getLoginKey() {

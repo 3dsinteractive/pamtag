@@ -1,42 +1,57 @@
+import IConfig from "./interface/iconfig";
+import { IStorageProvider } from "./storage_provider";
+
 export class Utils {
-  setCookie(name: string, value: string, hours: number) {
-    var expires = "";
-    if (hours) {
-      var date = new Date();
-      date.setTime(date.getTime() + hours * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  private static storage: IStorageProvider;
+  private static config: IConfig;
+
+  static setConfig(config: IConfig) {
+    Utils.config = config;
   }
 
-  getCookie(name: string) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(";");
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == " ") c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
+  static setStorageProvider(storage: IStorageProvider) {
+    Utils.storage = storage;
   }
 
-  getPageURL() {
+  static setCookie(name: string, value: string, hours: number) {
+    Utils.storage.setCookie(name, value, hours);
+  }
+
+  static getCookie(name: string) {
+    return Utils.storage.getCookie(name);
+  }
+
+  static deleteCookie(name: string) {
+    Utils.storage.deleteCookie(name);
+  }
+
+  static setLocalStorage(key: string, value: string) {
+    Utils.storage.setLocalStorage(key, value);
+  }
+
+  static getLocalStorage(key: string) {
+    return Utils.storage.getLocalStorage(key);
+  }
+
+  static deleteLocalStorage(key: string) {
+    Utils.storage.deleteLocalStorage(key);
+  }
+
+  static getPageURL() {
+    if (Utils.config.mobileAppMode) {
+      return undefined;
+    }
     return window.document.location && window.document.location.href;
   }
 
-  deleteCookie(name: string) {
-    document.cookie =
-      name + "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-  }
-
-  localeText(obj: any, lang: string) {
+  static localeText(obj: any, lang: string) {
     if (obj[lang]) {
       return obj[lang];
     }
     return obj["en"];
   }
 
-  applyOpacityToColor(colorCode: string, opacity: number) {
+  static applyOpacityToColor(colorCode: string, opacity: number) {
     // Remove the '#' symbol from the color code
     const hex = colorCode.replace("#", "");
 
@@ -51,7 +66,7 @@ export class Utils {
     return adjustedHex;
   }
 
-  templateReplaceValue(source: string, variables: Record<string, any>) {
+  static templateReplaceValue(source: string, variables: Record<string, any>) {
     Object.keys(variables).forEach((k) => {
       var value = variables[k];
       var regex = new RegExp(`"{${k}}"`, "g");
@@ -60,7 +75,7 @@ export class Utils {
     return source;
   }
 
-  getScrollPercent = (): number => {
+  static getScrollPercent = (): number => {
     const h = document.documentElement;
     const b = document.body;
     const st = "scrollTop";
@@ -69,4 +84,32 @@ export class Utils {
       ? ((h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight)) * 100
       : 0;
   };
+
+  static getBrowserLanguage() {
+    if (Utils.config.mobileAppMode) {
+      return undefined;
+    }
+    return window.navigator.language;
+  }
+
+  static getPageReferer() {
+    if (Utils.config.mobileAppMode) {
+      return undefined;
+    }
+    return window.document.referrer;
+  }
+
+  static getWindowTitle() {
+    if (Utils.config.mobileAppMode) {
+      return undefined;
+    }
+    return window.document.title;
+  }
+
+  static getUserAgent() {
+    if (Utils.config.mobileAppMode) {
+      return undefined;
+    }
+    return window.navigator.userAgent;
+  }
 }

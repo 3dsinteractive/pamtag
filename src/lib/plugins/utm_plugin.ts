@@ -1,5 +1,6 @@
 import PamTracker from "..";
 import { Plugin } from "../core/plugin";
+import { Utils } from "../utils";
 
 // utm_source = Identifies which site or advertising campaign the traffic came from
 // utm_medium =	Identifies what type of link was used, such as email, CPC, or banner
@@ -27,38 +28,38 @@ export class UTMPlugin extends Plugin {
     return utmParams;
   }
 
-  private readUTMFromCookie(pam: PamTracker): UtmParams {
+  private async readUTMFromCookie(pam: PamTracker): Promise<UtmParams> {
     const utmParams: UtmParams = {};
 
-    utmParams.source = pam.utils.getCookie("utm_source");
-    utmParams.medium = pam.utils.getCookie("utm_medium");
-    utmParams.campaign = pam.utils.getCookie("utm_campaign");
-    utmParams.term = pam.utils.getCookie("utm_term");
-    utmParams.content = pam.utils.getCookie("utm_content");
+    utmParams.source = await Promise.resolve(Utils.getCookie("utm_source"));
+    utmParams.medium = await Promise.resolve(Utils.getCookie("utm_medium"));
+    utmParams.campaign = await Promise.resolve(Utils.getCookie("utm_campaign"));
+    utmParams.term = await Promise.resolve(Utils.getCookie("utm_term"));
+    utmParams.content = await Promise.resolve(Utils.getCookie("utm_content"));
 
     return utmParams;
   }
 
   private saveUTMToCookie(pam: PamTracker) {
-    const utm = this.extractUtmParams(pam.utils.getPageURL());
+    const utm = this.extractUtmParams(Utils.getPageURL());
 
     // Default is 1 hours
     const cookieExpireHours = pam.config.sessionExpireTimeMinutes / 60;
 
     if (utm.source) {
-      pam.utils.setCookie("utm_source", utm.source, cookieExpireHours);
+      Utils.setCookie("utm_source", utm.source, cookieExpireHours);
     }
     if (utm.medium) {
-      pam.utils.setCookie("utm_medium", utm.medium, cookieExpireHours);
+      Utils.setCookie("utm_medium", utm.medium, cookieExpireHours);
     }
     if (utm.campaign) {
-      pam.utils.setCookie("utm_campaign", utm.campaign, cookieExpireHours);
+      Utils.setCookie("utm_campaign", utm.campaign, cookieExpireHours);
     }
     if (utm.term) {
-      pam.utils.setCookie("utm_term", utm.term, cookieExpireHours);
+      Utils.setCookie("utm_term", utm.term, cookieExpireHours);
     }
     if (utm.content) {
-      pam.utils.setCookie("utm_content", utm.content, cookieExpireHours);
+      Utils.setCookie("utm_content", utm.content, cookieExpireHours);
     }
   }
 
@@ -83,17 +84,17 @@ export class UTMPlugin extends Plugin {
     return merged;
   }
 
-  override initPlugin(pam: PamTracker): void {
+  override initPlugin(pam: PamTracker) {
     this.saveUTMToCookie(pam);
 
-    pam.hook.onPreTracking("*", (p) => {
+    pam.hook.onPreTracking("*", async (p) => {
       this.saveUTMToCookie(pam);
 
       try {
         let url = new URL(p.page_url);
 
-        const utmInCookie = this.readUTMFromCookie(pam);
-        const utmInURL = this.extractUtmParams(pam.utils.getPageURL());
+        const utmInCookie = await this.readUTMFromCookie(pam);
+        const utmInURL = this.extractUtmParams(Utils.getPageURL());
 
         // Merge UTM from cookie and URL but UTM from URL is higher priority
         const utm = this.margeUTM(utmInURL, utmInCookie);

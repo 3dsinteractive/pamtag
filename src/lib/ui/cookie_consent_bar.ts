@@ -1,6 +1,7 @@
 import PamTracker from "..";
 import { ConsentMessage } from "../interface/consent_message";
 import ShadowDom from "../ui/shadow_dom";
+import { Utils } from "../utils";
 import htmlContent from "./html/consent_bar_template.html";
 
 export class CookieConsentBatUI extends ShadowDom {
@@ -23,7 +24,7 @@ export class CookieConsentBatUI extends ShadowDom {
           .bar_background_opacity_percentage / 100;
     }
 
-    const backgroundColor = this.pam.utils.applyOpacityToColor(
+    const backgroundColor = Utils.applyOpacityToColor(
       consentMessage.data.style_configuration.bar_background_color,
       alpha
     );
@@ -89,6 +90,6 @@ export class CookieConsentBatUI extends ShadowDom {
   }
 
   private getText(obj: any) {
-    return this.pam.utils.localeText(obj, this.pam.config.preferLanguage);
+    return Utils.localeText(obj, this.pam.config.preferLanguage);
   }
 }
