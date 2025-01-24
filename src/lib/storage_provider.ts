@@ -1,6 +1,6 @@
 // Base class interface for storage providers
 export class IStorageProvider {
-  setLocalStorage(key: string, value: string): void {
+  setLocalStorage(key: string, value: string): void | Promise<void> {
     throw new Error("Method not implemented.");
   }
 
@@ -8,11 +8,11 @@ export class IStorageProvider {
     throw new Error("Method not implemented.");
   }
 
-  deleteLocalStorage(key: string): void {
+  deleteLocalStorage(key: string): void | Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  setCookie(name: string, value: string, hours?: number): void {
+  setCookie(name: string, value: string, hours?: number): void | Promise<void> {
     throw new Error("Method not implemented.");
   }
 
@@ -20,7 +20,7 @@ export class IStorageProvider {
     throw new Error("Method not implemented.");
   }
 
-  deleteCookie(name: string): void {
+  deleteCookie(name: string): void | Promise<void> {
     throw new Error("Method not implemented.");
   }
 }
