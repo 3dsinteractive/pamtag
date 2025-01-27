@@ -8,9 +8,14 @@ import { WebAttenTionPlugin } from "./web_attention";
 import { CookieConsentPlugin } from "./cookie_consent";
 import IConfig from "../interface/iconfig";
 import { AffiliateAndRedirectId } from "./affiliate_redirect_id";
+import { Utils } from "../utils";
 
 export class PluginRegistration {
   static getPlugins(config: IConfig): Plugin[] {
+    if (Utils.isMobileAppMode()) {
+      let plugins: Plugin[] = [new LoginState()];
+      return plugins;
+    }
     let plugins: Plugin[] = [
       new AffiliateAndRedirectId(),
       new GoogleTagManager(),

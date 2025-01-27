@@ -37,6 +37,8 @@ export class ContactStateManager {
     this.loginId = (await Promise.resolve(Utils.getCookie("loginId"))) ?? "";
     this.publicContact =
       (await Promise.resolve(Utils.getCookie("publicContact"))) ?? "";
+
+    console;
     this.loginContact =
       (await Promise.resolve(Utils.getCookie("loginContact"))) ?? "";
   }

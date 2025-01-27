@@ -9,6 +9,10 @@ export class Utils {
     Utils.config = config;
   }
 
+  static isMobileAppMode() {
+    return Utils.config.mobileAppMode === true;
+  }
+
   static setStorageProvider(storage: IStorageProvider) {
     Utils.storage = storage;
   }

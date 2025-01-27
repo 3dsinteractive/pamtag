@@ -17,6 +17,7 @@ export class LoginState extends Plugin {
         p.form_fields._contact_id = contactId;
       }
       p.form_fields._database = database;
+
       return p;
     });
 

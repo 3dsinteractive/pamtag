@@ -100,6 +100,8 @@ class PamTracker {
     Utils.setConfig(config);
     if (!storage) {
       this.storage = new BrowserStorageProvider();
+    } else {
+      this.storage = storage;
     }
 
     Utils.setStorageProvider(this.storage);
@@ -113,7 +115,8 @@ class PamTracker {
     if (!this.config.consentBarAdpter) {
       this.config.consentBarAdpter = consentBarAdapter;
     }
-    if (config.mobileAppMode) {
+
+    if (config.mobileAppMode === true) {
       this.initialize(config);
     } else if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", () => {
@@ -164,9 +167,12 @@ class PamTracker {
     }
 
     const plugins = PluginRegistration.getPlugins(config);
-    for (const i in plugins) {
-      plugins[i].initPlugin(this);
-    }
+
+    try {
+      for (const i in plugins) {
+        plugins[i].initPlugin(this);
+      }
+    } catch (e) {}
 
     // Hook StartUp
     this.hook.dispatchOnStartup(config);
@@ -236,9 +242,7 @@ class PamTracker {
       flushEventBefore: true,
     };
 
-    try {
-      await this.queueManager.enqueueJob(job);
-    } catch (e: any) {}
+    return await this.queueManager.enqueueJob(job);
   }
 
   async userLogout() {

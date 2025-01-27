@@ -33,15 +33,37 @@ export class PamAPI {
   getDefaultPayload(): Record<string, any> {
     let payload: any = {};
     const lang = Utils.getBrowserLanguage();
+    if (lang) {
+      payload.page_language = lang;
+    }
 
-    return {
-      page_language: window.navigator.language,
-      page_referrer: window.document.referrer,
-      page_title: window.document.title,
-      page_url: decodeURI(Utils.getPageURL()),
-      platform: "browser",
-      user_agent: window.navigator.userAgent,
-    };
+    const windowTitle = Utils.getWindowTitle();
+    if (windowTitle) {
+      payload.page_title = windowTitle;
+    }
+
+    const pageURL = Utils.getPageURL();
+    if (pageURL) {
+      payload.page_url = decodeURI(pageURL);
+    }
+
+    const pageReferer = Utils.getPageReferer();
+    if (pageReferer) {
+      payload.page_referrer = pageReferer;
+    }
+
+    if (Utils.isMobileAppMode()) {
+      payload.platform = "mobile";
+      payload.user_agent = "MobileApp";
+    } else {
+      payload.platform = "browser";
+      const userAgent = Utils.getUserAgent();
+      if (userAgent) {
+        payload.user_agent = userAgent;
+      }
+    }
+
+    return payload;
   }
 
   async postTracker(
@@ -54,7 +76,7 @@ export class PamAPI {
       delete data.form_fields._contact_id;
     }
     delete data.form_fields._cookie_less;
-
+    console.log("POST data", data);
     try {
       const response = await this.http.post(
         "/trackers/events",
@@ -62,6 +84,8 @@ export class PamAPI {
         headers,
         cookieLess
       );
+
+      console.log("Response", response);
       response.cancelled = false;
       return response;
     } catch (e) {}
