@@ -7,7 +7,7 @@
     "allowJs": true,
     "sourceMap": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": false,
     "lib": ["es2018", "dom"],
     "moduleResolution": "node"
   },
