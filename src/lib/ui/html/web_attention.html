@@ -25,20 +25,41 @@
       }
       .attention-body-small {
         position: fixed;
-        width: 300px;
+        width: 400px;
       }
+      @media (max-width: 1024px) {
+        .attention-body-small {
+          width: 300px;
+        }
+      }
+
       .attention-body-medium {
-        width: 600px;
+        width: 550px;
       }
+      @media (max-width: 768px) {
+        .attention-body-medium {
+          width: 400px;
+        }
+      }
+      @media (max-width: 425px) {
+        .attention-body-medium {
+          width: 90%;
+        }
+      }
+
       .attention-body-large {
-        width: 800px;
+        width: 700px;
       }
+      @media (max-width: 1024px) {
+        .attention-body-large {
+          width: 90%;
+          max-height: 90%;
+        }
+      }
+
       .attention-body-full {
-        position: fixed;
-        left: 10px !important;
-        top: 10px !important;
-        right: 10px !important;
-        bottom: 10px !important;
+        width: 95%;
+        height: 95%;
       }
       .attention-body-custom {
         position: fixed;

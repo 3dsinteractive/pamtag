@@ -75,6 +75,30 @@ export class WebAttenTionPlugin extends Plugin {
     const contactID = pam.contactState.getContactId();
     try {
       const attention = await pam.api.getWebAttention(contactID, url);
+
+      // const attention: IAttentionItem = {
+      //   html: '<html><body><div style="background-color:#ffffff;display:flex;flex-direction:column;flex:1;" class="pam-web-attention"><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="flex:1;justify-content:center;"><img src="https://sompo-cdn.pams.ai/ecom/public/2TQDpf1Nvp7CTYCMwLJfsX7j7Br.jpg" style="width:100%;display:flex;flex-direction:row;"></img></div></div></div></body></html> <img src="https://pams.sompo.co.th/pixel/2tAqQ6KtJUlroED7s3NQmJnFsDz?media=web_attention" height="1" width="1" style="display: none;"/>',
+      //   css: "",
+      //   custom_css: "",
+      //   js: "",
+      //   options: {
+      //     type: "POPUP",
+      //     position: "FIXED",
+      //     container_id: "",
+      //     size: {
+      //       type: "full",
+      //       width: 0,
+      //     },
+      //     display_after: {
+      //       percent: 0,
+      //       second: 1,
+      //       type: "time_spend",
+      //     },
+      //     allow_backdrop_click: true,
+      //     backdrop_opacity: 50,
+      //     is_borderless: false,
+      //   },
+      // };
       if (
         Object.keys(attention).length > 0 &&
         attention.constructor === Object
