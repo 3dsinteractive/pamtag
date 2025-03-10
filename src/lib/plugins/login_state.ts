@@ -4,10 +4,6 @@ import { Plugin } from "../core/plugin";
 export class LoginState extends Plugin {
   override initPlugin(pam: PamTracker): void {
     pam.hook.onPreTracking("*", (p) => {
-      if (p.event === "login") {
-        console.log("PRE LOGIN", JSON.stringify(p, null, 2));
-      }
-
       const contactId = pam.contactState.getContactId();
       const database = pam.contactState.getDatabase();
 
@@ -33,10 +29,7 @@ export class LoginState extends Plugin {
       if (payload.event === "logout") {
         pam.contactState.logout();
       } else if (payload.event === "login") {
-        console.log("POST LOGIN", JSON.stringify(payload, null, 2));
-
         if (pam.config.loginDBAlias === result._database) {
-          console.log("LOGIN_SUCCESS");
           const loginKey = pam.contactState.getLoginKey();
           const loginId = payload.form_fields[loginKey];
           pam.contactState.login(loginId);
