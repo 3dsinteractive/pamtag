@@ -31,13 +31,21 @@ class PamTracker {
       let jsonPayload = this.buildEventPayload(job);
 
       // Hook Pre Event
-      jsonPayload = await this.hook.dispatchPreTracking(job.event, jsonPayload);
+      const jsonPayload2 = await this.hook.dispatchPreTracking(
+        job.event,
+        jsonPayload
+      );
+      if (jsonPayload2) {
+        jsonPayload = jsonPayload2;
+      }
+
       if (jsonPayload && jsonPayload.cancel === true) {
         this.hook.dispatchPostTracking(job.event, jsonPayload, {
           cancelled: true,
         });
         return [{ cancelled: true }];
       }
+
       const response = await this.api.postTracker(jsonPayload);
       if (response) {
         // Hook Post Event
@@ -235,13 +243,18 @@ class PamTracker {
       data[loginKey] = loginId;
     }
 
+    const database = this.config.loginDBAlias;
+    data["_database"] = database;
+
+    data["_contact_id"] = "<REMOVE>";
+
     job = {
       event: "login",
       trackingConsentMessageId: this.config.trackingConsentMessageId,
       data: data,
       flushEventBefore: true,
     };
-
+    console.log("ENQUEUE", JSON.stringify(job, null, 2));
     return await this.queueManager.enqueueJob(job);
   }
 

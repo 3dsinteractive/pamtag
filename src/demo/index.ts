@@ -3,9 +3,9 @@ const pam = new PamTracker({
   webPushPublicKey: "",
   baseApi: "https://stgx.pams.ai",
   trackingConsentMessageId: "1qDQOyMeBv64LYnXi6dJOcZp2YQ",
-  publicDBAlias: "", //"ecom-public",
-  loginDBAlias: "ecom-public",
-  loginKey: "email",
+  publicDBAlias: "ecom-public",
+  loginDBAlias: "ecom-login",
+  loginKey: "customer",
   autoTrackPageview: true,
   displayCookieConsentBarOnStartup: true,
   preferLanguage: "th",
@@ -22,7 +22,7 @@ body{
 document.querySelector("body").innerHTML = `
 <div id="masthead"></div>
 <div class="site-header-space"></div>
-<h1>Hello World!</h1><button id="openConsent">Consent</button><br><button id="trackEvent">TrackEvent</button>`;
+<h1>Hello World!</h1><button id="openConsent">Consent</button><br><button id="trackEvent">TrackEvent</button><button id="trackEvent2">TrackEvent 2</button>`;
 
 const tracking = "1qDQOyMeBv64LYnXi6dJOcZp2YQ";
 const contact = "1qDQgHFygpAhuX0gBxHkYAPiwBN";
@@ -35,7 +35,13 @@ btn.addEventListener("click", async (e) => {
 
 var trackEvent = document.getElementById("trackEvent");
 trackEvent.addEventListener("click", async (e) => {
-  pam.track(`test_event`, { test: 1 });
+  pam.userLogin("0000000000");
+  //.track(`test_event`, { test: 1, customer: "55555999" });
+});
+
+var trackEvent2 = document.getElementById("trackEvent2");
+trackEvent2.addEventListener("click", async (e) => {
+  pam.track(`test_event_2`, { test: 2 });
 });
 
 function test() {
