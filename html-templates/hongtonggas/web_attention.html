@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      .attention-container {
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-color: <%= it.SHADOW_BG_COLOR %>;
+        z-index: 9999999;
+      }
+
+      .attention-body {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        overflow: auto;
+        max-height: 100%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .attention-body-small {
+        position: fixed;
+        width: 400px;
+      }
+      @media (max-width: 1024px) {
+        .attention-body-small {
+          width: 300px;
+        }
+      }
+
+      .attention-body-medium {
+        width: 550px;
+      }
+      @media (max-width: 768px) {
+        .attention-body-medium {
+          width: 400px;
+        }
+      }
+      @media (max-width: 425px) {
+        .attention-body-medium {
+          width: 90%;
+        }
+      }
+
+      .attention-body-large {
+        width: 700px;
+      }
+      @media (max-width: 1024px) {
+        .attention-body-large {
+          width: 90%;
+          max-height: 90%;
+        }
+      }
+
+      .attention-body-full {
+        width: 95%;
+        height: 95%;
+      }
+      .attention-body-custom {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: <%= it.FIXED_POPUP_WIDTH %>px;
+        overflow: auto;
+        max-height: 100%;
+      }
+      .x-icon {
+        margin-left: auto;
+        margin-bottom: 5px;
+        position: relative;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 1;
+        background-color: #0006;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .x-icon::before {
+        color: #fff;
+        content: "\2715";
+      }
+      .border-popup {
+        padding: 5px;
+        background: #fff;
+        border-radius: 10px;
+      }
+      <%= it.CUSTOM_CSS %>
+    </style>
+  </head>
+  <body>
+    <div class="attention-container">
+      <div class="attention-body <%= it.POPUP_BODY_CLASS %>">
+        <div class="x-icon"></div>
+        <%= it.CONTENT %>
+      </div>
+    </div>
+    <script>
+      <%= it.CUSTOM_JS %>
+    </script>
+  </body>
+</html>
