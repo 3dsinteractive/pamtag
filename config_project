@@ -11,7 +11,7 @@ rm -rf "src/lib/ui/html"
 
 # Check if NAME is set and the custom directory exists
 if [ -n "$NAME" ] && [ -d "$CUSTOM_HTML_PATH" ]; then
-    exho "copy the custom template: $NAME"
+    echo "copy the custom template: $NAME"
     cp -r "$CUSTOM_HTML_PATH" "src/lib/ui/html"
 else
     echo "copy the default template"
