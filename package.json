@@ -1,6 +1,6 @@
 {
   "name": "pamtag",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "description": "PAM Tracker script",
   "main": "build/pamtracker.js",
   "types": "build/types/index.d.ts",
