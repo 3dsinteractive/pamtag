@@ -51,7 +51,7 @@ export class WebAttenTionPlugin extends Plugin {
         return;
       }
 
-      const contentHTML = `${attention.html}<style>${attention.css}</stylr><script>${attention.js}</script>`;
+      const contentHTML = `${attention.html}<style>${attention.css}</style><script>${attention.js}</script>`;
 
       if (attention.options.type == AttentionType.REPLACE) {
         target.innerHTML = contentHTML;
