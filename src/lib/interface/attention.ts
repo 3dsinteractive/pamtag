@@ -1,34 +1,14 @@
-export type IAttentionType =
-  | "BAR"
-  | "POPUP"
-  | "CORNER"
-  | "REPLACE"
-  | "PREPEND"
-  | "APPEND";
+export type IAttentionType = 'BAR' | 'POPUP' | 'CORNER' | 'REPLACE' | 'PREPEND' | 'APPEND';
 
-export type IBARPositionType =
-  | "TOP"
-  | "TOP_FIXED"
-  | "BOTTOM"
-  | "BOTTOM_FIXED"
-  | "FIXED";
+export type IBARPositionType = 'TOP' | 'TOP_FIXED' | 'BOTTOM' | 'BOTTOM_FIXED' | 'FIXED';
 
-export type ICornerPositionType =
-  | "TOP_LEFT"
-  | "TOP_RIGHT"
-  | "BOTTOM_LEFT"
-  | "BOTTOM_RIGHT";
+export type ICornerPositionType = 'TOP_LEFT' | 'TOP_RIGHT' | 'BOTTOM_LEFT' | 'BOTTOM_RIGHT';
 
 export type IPopupPositionType = null;
 
-export type IPopupSizeType = "SM" | "MD" | "LG" | "FULL" | "CUSTOM";
+export type IPopupSizeType = 'SM' | 'MD' | 'LG' | 'FULL' | 'CUSTOM';
 
-export type INewPopupSizeType =
-  | "small"
-  | "medium"
-  | "large"
-  | "full"
-  | "custom";
+export type INewPopupSizeType = 'small' | 'medium' | 'large' | 'full' | 'custom';
 
 export interface ISize {
   type: IPopupSizeType | INewPopupSizeType;
@@ -36,33 +16,33 @@ export interface ISize {
 }
 
 export enum SizeType {
-  SM = "SM",
-  MD = "MD",
-  LG = "LG",
-  FULL = "FULL",
-  CUSTOM = "CUSTOM",
+  SM = 'SM',
+  MD = 'MD',
+  LG = 'LG',
+  FULL = 'FULL',
+  CUSTOM = 'CUSTOM',
 }
 
 export enum NewSizeType {
-  SM = "small",
-  MD = "medium",
-  LG = "large",
-  FULL = "full",
-  CUSTOM = "custom",
+  SM = 'small',
+  MD = 'medium',
+  LG = 'large',
+  FULL = 'full',
+  CUSTOM = 'custom',
 }
 
 export enum DisplayTimeType {
-  TIME_SPEND = "time_spend",
-  PAGE_SCROLLING = "page_scrolling",
+  TIME_SPEND = 'time_spend',
+  PAGE_SCROLLING = 'page_scrolling',
 }
 
 export enum AttentionType {
-  BAR = "BAR",
-  POPUP = "POPUP",
-  CORNER = "CORNER",
-  REPLACE = "REPLACE",
-  PREPEND = "PREPEND",
-  APPEND = "APPEND",
+  BAR = 'BAR',
+  POPUP = 'POPUP',
+  CORNER = 'CORNER',
+  REPLACE = 'REPLACE',
+  PREPEND = 'PREPEND',
+  APPEND = 'APPEND',
 }
 
 export interface IDisplayTimeSpend {
@@ -79,13 +59,14 @@ export interface IDisplayPageScrolling {
 export interface IAttentionItemOptions {
   type: IAttentionType;
   position: IBARPositionType | ICornerPositionType | IPopupPositionType;
-  container_id: string;
+  container_id?: string;
+  css_selector?: string;
   size: ISize;
   allow_backdrop_click?: boolean;
   backdrop_opacity: number | null;
   is_borderless: boolean;
   display_after: {
-    type: "time_spend" | "page_scrolling";
+    type: 'time_spend' | 'page_scrolling';
     second?: number;
     percent?: number;
   };
