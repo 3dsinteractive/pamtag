@@ -4,6 +4,7 @@ import { Plugin } from '../core/plugin';
 import { IAttentionItem, DisplayTimeType, AttentionType } from '../interface/attention';
 import { WebAttentionPopup } from '../ui/web_attention_popup';
 import { Utils } from '../utils';
+import { v4 as uuidv4 } from 'uuid';
 
 export class WebAttenTionPlugin extends Plugin {
   private previousUrl = '';
@@ -35,7 +36,6 @@ export class WebAttenTionPlugin extends Plugin {
   private initAttention(attention: IAttentionItem) {
     if (!this.isRendered) {
       this.attention = attention;
-
       if (attention.options.type == AttentionType.POPUP) {
         this.handleAsPopup(attention);
       } else {
@@ -51,7 +51,8 @@ export class WebAttenTionPlugin extends Plugin {
         return;
       }
 
-      const contentHTML = `${attention.html}<style>${attention.css}</style><script>${attention.js}</script>`;
+      const rndId = uuidv4().replaceAll('-', '');
+      let contentHTML = `<div id="${rndId}">${attention.html}<style>${attention.css}</style></div>`;
 
       if (attention.options.type == AttentionType.REPLACE) {
         target.innerHTML = contentHTML;
@@ -62,6 +63,13 @@ export class WebAttenTionPlugin extends Plugin {
       } else if (attention.options.type == AttentionType.PREPEND) {
         target.insertAdjacentHTML('afterbegin', contentHTML);
         this.isRendered = true;
+      }
+
+      if (attention.js) {
+        const attentionDiv = document.getElementById(rndId);
+        const newScript = document.createElement('script');
+        newScript.textContent = attention.js;
+        attentionDiv.appendChild(newScript);
       }
     }
   }
@@ -101,25 +109,28 @@ export class WebAttenTionPlugin extends Plugin {
       const attention = await pam.api.getWebAttention(contactID, url);
 
       // const attention: IAttentionItem = {
-      //   html: '<html><body><div style="background-color:#ffffff;display:flex;flex-direction:column;flex:1;" class="pam-web-attention"><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="flex:1;justify-content:center;"><img src="https://sompo-cdn.pams.ai/ecom/public/2TQDpf1Nvp7CTYCMwLJfsX7j7Br.jpg" style="width:100%;display:flex;flex-direction:row;"></img></div></div></div></body></html> <img src="https://pams.sompo.co.th/pixel/2tAqQ6KtJUlroED7s3NQmJnFsDz?media=web_attention" height="1" width="1" style="display: none;"/>',
-      //   css: "",
-      //   custom_css: "",
-      //   js: "",
+      //   html: '<html><body><div style="background-color:#ffffff;display:flex;flex-direction:column;flex:1;" class="pam-web-attention"><div style="background-color:#ffffff;display:flex;flex-direction:row;flex:1;"><div style="flex:1;justify-content:center;"><img src="https://s3-ap-southeast-1.amazonaws.com/pam6-demo/ecom/public/2xCy3JR2fksEHM64LNVynp2xYaB.png" style="width:100%;display:flex;flex-direction:row;"></img></div></div></div></body></html> <img src="https://demox.pams.ai/pixel/2xEWH6j5YgA3OVDVQXfl4DwPVuV?media=web_attention" height="1" width="1" style="display: none;"/>',
+      //   css: '',
+      //   custom_css: '',
+      //   js: 'console.log("debug");\nfetch("https://jsonplaceholder.typicode.com/todos/1");',
       //   options: {
-      //     type: "POPUP",
-      //     position: "FIXED",
-      //     container_id: "",
+      //     type: 'REPLACE',
+      //     position: '',
+      //     css_selector: '#box',
       //     size: {
-      //       type: "full",
+      //       type: '',
       //       width: 0,
       //     },
       //     display_after: {
+      //       intent: 'รังสิต,ดอนเมือง',
+      //       intent_delay_seconds: 0,
+      //       intent_watch_events: 'lead',
       //       percent: 0,
-      //       second: 1,
-      //       type: "time_spend",
+      //       second: 0,
+      //       type: 'time_spend',
       //     },
-      //     allow_backdrop_click: true,
-      //     backdrop_opacity: 50,
+      //     allow_backdrop_click: false,
+      //     backdrop_opacity: 0,
       //     is_borderless: false,
       //   },
       // };

@@ -11,7 +11,7 @@ export type IPopupSizeType = 'SM' | 'MD' | 'LG' | 'FULL' | 'CUSTOM';
 export type INewPopupSizeType = 'small' | 'medium' | 'large' | 'full' | 'custom';
 
 export interface ISize {
-  type: IPopupSizeType | INewPopupSizeType;
+  type: IPopupSizeType | INewPopupSizeType | '';
   width?: number;
 }
 
@@ -58,7 +58,7 @@ export interface IDisplayPageScrolling {
 
 export interface IAttentionItemOptions {
   type: IAttentionType;
-  position: IBARPositionType | ICornerPositionType | IPopupPositionType;
+  position: IBARPositionType | ICornerPositionType | IPopupPositionType | '';
   container_id?: string;
   css_selector?: string;
   size: ISize;
@@ -66,6 +66,9 @@ export interface IAttentionItemOptions {
   backdrop_opacity: number | null;
   is_borderless: boolean;
   display_after: {
+    intent?: string;
+    intent_delay_seconds?: number;
+    intent_watch_events?: string;
     type: 'time_spend' | 'page_scrolling';
     second?: number;
     percent?: number;

@@ -1,12 +1,9 @@
-import { HTTPClient } from "./httpclient";
-import {
-  ITrackerResponse,
-  IBulkTrackerResponse,
-} from "./interface/itracker_response";
-import { ConsentMessage } from "./interface/consent_message";
-import { IAttentionItem } from "./interface/attention";
-import { ICustomerConsentStatus } from "./interface/iconsent_status";
-import { Utils } from "./utils";
+import { HTTPClient } from './httpclient';
+import { ITrackerResponse, IBulkTrackerResponse } from './interface/itracker_response';
+import { ConsentMessage } from './interface/consent_message';
+import { IAttentionItem } from './interface/attention';
+import { ICustomerConsentStatus } from './interface/iconsent_status';
+import { Utils } from './utils';
 export class PamAPI {
   private http: HTTPClient;
 
@@ -14,10 +11,7 @@ export class PamAPI {
     this.http = new HTTPClient(baseAPIURL);
   }
 
-  async getWebAttention(
-    contactId: string,
-    pageUrl: string
-  ): Promise<IAttentionItem> {
+  async getWebAttention(contactId: string, pageUrl: string): Promise<IAttentionItem> {
     let payload: any = {
       _contact_id: contactId,
     };
@@ -27,7 +21,7 @@ export class PamAPI {
       payload.page_url = decodeURI(url);
     }
 
-    return await this.http.post("/attention", payload, {});
+    return await this.http.post('/attention', payload, {});
   }
 
   getDefaultPayload(): Record<string, any> {
@@ -53,10 +47,10 @@ export class PamAPI {
     }
 
     if (Utils.isMobileAppMode()) {
-      payload.platform = "mobile";
-      payload.user_agent = "MobileApp";
+      payload.platform = 'mobile';
+      payload.user_agent = 'MobileApp';
     } else {
-      payload.platform = "browser";
+      payload.platform = 'browser';
       const userAgent = Utils.getUserAgent();
       if (userAgent) {
         payload.user_agent = userAgent;
@@ -76,16 +70,10 @@ export class PamAPI {
       delete data.form_fields._contact_id;
     }
     delete data.form_fields._cookie_less;
-    console.log("POST data", data);
-    try {
-      const response = await this.http.post(
-        "/trackers/events",
-        data,
-        headers,
-        cookieLess
-      );
 
-      console.log("Response", response);
+    try {
+      const response = await this.http.post('/trackers/events', data, headers, cookieLess);
+
       response.cancelled = false;
       return response;
     } catch (e) {}
@@ -123,7 +111,7 @@ export class PamAPI {
 
     try {
       const response: IBulkTrackerResponse = await this.http.post(
-        "/trackers/events",
+        '/trackers/events',
         payload,
         headers,
         cookieLess
@@ -146,9 +134,7 @@ export class PamAPI {
     return response;
   }
 
-  async loadConsentDetails(
-    consentMessageIDs: string[]
-  ): Promise<Record<string, ConsentMessage>> {
+  async loadConsentDetails(consentMessageIDs: string[]): Promise<Record<string, ConsentMessage>> {
     const result: Record<string, ConsentMessage> = {};
 
     while (consentMessageIDs.length > 0) {
