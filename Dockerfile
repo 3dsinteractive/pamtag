@@ -1,5 +1,6 @@
-FROM node:18-alpine
+FROM node:23-alpine
 
+RUN corepack enable
 WORKDIR /home/node/app
 ADD . /home/node/app
 
@@ -7,7 +8,7 @@ RUN yarn
 RUN yarn build
 
 
-FROM nginx:1.20
+FROM nginx:1.27.5
 
 WORKDIR /usr/share/nginx/html
 
