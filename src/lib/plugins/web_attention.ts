@@ -52,7 +52,7 @@ export class WebAttenTionPlugin extends Plugin {
       }
 
       const rndId = uuidv4().replaceAll('-', '');
-      let contentHTML = `<div id="${rndId}">${attention.html}<style>${attention.css}</style></div>`;
+      const contentHTML = `<div id="${rndId}">${attention.html}</div>`;
 
       if (attention.options.type == AttentionType.REPLACE) {
         target.innerHTML = contentHTML;
@@ -65,13 +65,50 @@ export class WebAttenTionPlugin extends Plugin {
         this.isRendered = true;
       }
 
-      if (attention.js) {
-        const attentionDiv = document.getElementById(rndId);
-        const newScript = document.createElement('script');
-        newScript.textContent = attention.js;
-        attentionDiv.appendChild(newScript);
+      const attentionDiv = document.getElementById(rndId);
+
+      const cssElement = this.createStyleTag(attention.css);
+      if (cssElement) {
+        attentionDiv.appendChild(cssElement);
+      }
+
+      const customCssElement = this.createStyleTag(attention.custom_css);
+      if (customCssElement) {
+        attentionDiv.appendChild(customCssElement);
+      }
+
+      const scriptElement = this.createScriptTag(attention.js);
+      if (scriptElement) {
+        attentionDiv.appendChild(scriptElement);
       }
     }
+  }
+
+  private createDivTag(
+    html?: string,
+    opts?: { className?: string; id?: string }
+  ): HTMLDivElement | undefined {
+    if (!html?.trim()) return;
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    if (opts?.className) div.className = opts.className;
+    if (opts?.id) div.id = opts.id;
+    return div;
+  }
+
+  private createScriptTag(script?: string): HTMLScriptElement | undefined {
+    if (!script?.trim()) return;
+    const scriptTag = document.createElement('script');
+    scriptTag.type = 'text/javascript';
+    scriptTag.append(document.createTextNode(script));
+    return scriptTag;
+  }
+
+  private createStyleTag(css?: string): HTMLStyleElement | undefined {
+    if (!css?.trim()) return;
+    const styleTag = document.createElement('style');
+    styleTag.append(document.createTextNode(css));
+    return styleTag;
   }
 
   private handleAsPopup(attention: IAttentionItem) {
